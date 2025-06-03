@@ -9,7 +9,7 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    port: 7331,
+    port: 5173,
     host: '0.0.0.0', // 允許外部訪問
     open: true, // 自動開啟瀏覽器
   },
