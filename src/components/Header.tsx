@@ -31,7 +31,7 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {['Vaults', 'Analytics', 'Docs'].map((item, index) => (
+            {['Vaults', 'Trade', 'Dashboard', 'Docs'].map((item, index) => (
               <motion.a
                 key={item}
                 href={`#${item.toLowerCase()}`}
@@ -78,7 +78,7 @@ export default function Header() {
           exit={{ opacity: 0, height: 0 }}
         >
           <div className="px-4 py-6 space-y-4">
-            {['Vaults', 'Analytics', 'Docs'].map((item) => (
+            {['Vaults', 'Trade', 'Dashboard', 'Docs'].map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}

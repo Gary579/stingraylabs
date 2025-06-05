@@ -3,9 +3,9 @@ import { Zap, Twitter, Mail, BookOpen, ExternalLink } from 'lucide-react';
 
 const footerLinks = {
   platform: [
-    { name: "Selected Vaults", href: "#vaults" },
-    { name: "Moonplay Vaults", href: "#moonshot" },
-    { name: "Analytics", href: "#analytics" },
+    { name: "Vaults", href: "#vaults" },
+    { name: "Dashboard", href: "#dashboard" },
+    { name: "Trade", href: "#trade" },
   ],
   resources: [
     { name: "Documentation", href: "#docs" },
@@ -50,7 +50,7 @@ export default function Footer() {
 
               {/* Description */}
               <p className="text-white/70 text-sm leading-relaxed mb-6">
-                The future of active fund management on Sui Network. Experience transparent, 
+                The future of Manual Fund management on Sui Network. Experience transparent, 
                 automated, and high-yield DeFi strategies.
               </p>
 
