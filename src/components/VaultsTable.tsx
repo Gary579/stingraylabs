@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useState } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import MiniTrendChart from './MiniTrendChart';
 
 export interface VaultData {
   name: string;
@@ -9,7 +11,7 @@ export interface VaultData {
   tvl: string;
   runtime: string; 
   pnl: string;
-  overview: '📈' | '📉';
+  historicalPnl: number[];
 }
 
 interface VaultsTableProps {
@@ -58,7 +60,7 @@ const VaultsTable: React.FC<VaultsTableProps> = ({ title, data, itemsPerPage = I
               <tbody className="bg-dark-300 divide-y divide-dark-100">
                 {paginatedData.map((vault, index) => (
                   <motion.tr 
-                    key={`${title}-row-${index}`} // More unique key
+                    key={`${title}-row-${index}`}
                     className="hover:bg-dark-200/30 transition-colors duration-150"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -70,7 +72,9 @@ const VaultsTable: React.FC<VaultsTableProps> = ({ title, data, itemsPerPage = I
                     <td className="px-6 py-4 whitespace-nowrap text-white/80">{vault.tvl}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-white/80">{vault.runtime}</td>
                     <td className={`px-6 py-4 whitespace-nowrap font-semibold ${vault.pnl.startsWith('-') ? 'text-accent-orange' : 'text-accent-green'}`}>{vault.pnl}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-2xl">{vault.overview}</td>
+                    <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-400 text-center align-middle">
+                      <MiniTrendChart data={vault.historicalPnl} />
+                    </td>
                   </motion.tr>
                 ))}
               </tbody>
