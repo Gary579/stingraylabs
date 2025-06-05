@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion';
 import { Zap, Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
+const MotionLink = motion(Link);
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,19 +34,26 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {['Vaults', 'Trade', 'Dashboard', 'Docs'].map((item, index) => (
-              <motion.a
-                key={item}
-                href={`#${item.toLowerCase()}`}
+            {[ { name: 'Vaults', path: '/vaults' }, { name: 'Analytics', path: '#analytics' }, { name: 'Docs', path: '#docs' } ].map((item, index) => (
+              <MotionLink
+                to={item.path}
+                key={item.name}
                 className="text-white/70 hover:text-white font-medium transition-colors duration-300 relative group"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 whileHover={{ y: -2 }}
+                onClick={() => {
+                  if (item.path.startsWith('#')) {
+                    setIsMenuOpen(false);
+                  } else {
+                    setIsMenuOpen(false);
+                  }
+                }}
               >
-                {item}
+                {item.name}
                 <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-primary-400 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
-              </motion.a>
+              </MotionLink>
             ))}
           </nav>
 
@@ -78,15 +88,15 @@ export default function Header() {
           exit={{ opacity: 0, height: 0 }}
         >
           <div className="px-4 py-6 space-y-4">
-            {['Vaults', 'Trade', 'Dashboard', 'Docs'].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
+            {[ { name: 'Vaults', path: '/vaults' }, { name: 'Analytics', path: '#analytics' }, { name: 'Docs', path: '#docs' } ].map((item) => (
+              <Link
+                key={item.name}
+                to={item.path}
                 className="block text-white/70 hover:text-white font-medium transition-colors duration-300"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {item}
-              </a>
+                {item.name}
+              </Link>
             ))}
             <button className="btn-primary w-full mt-4">
               Connect Wallet

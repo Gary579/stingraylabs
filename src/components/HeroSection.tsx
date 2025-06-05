@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function HeroSection() {
   return (
@@ -44,14 +45,16 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          <motion.button
-            className="btn-primary group flex items-center gap-3 text-lg px-8 py-4"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Explore Vaults
-            <TrendingUp className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-          </motion.button>
+          <Link to="/vaults">
+            <motion.button
+              className="btn-primary group flex items-center gap-3 text-lg px-8 py-4"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Explore Vaults
+              <TrendingUp className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </motion.button>
+          </Link>
 
           <motion.button
             className="btn-secondary group flex items-center gap-3 text-lg px-8 py-4"

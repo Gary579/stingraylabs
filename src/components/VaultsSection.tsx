@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Pin, Eye } from 'lucide-react';
 import { useState } from 'react';
 import VaultCard from './VaultCard';
+import { Link } from 'react-router-dom';
 
 const vaultsData = [
   {
@@ -64,17 +65,19 @@ export default function VaultsSection() {
         >
           <div className="flex items-center gap-4 mb-6 md:mb-0">
             <Pin className="h-8 w-8 text-primary-400" />
-            <h2 className="text-4xl md:text-5xl font-bold text-white">Protocol Vaults</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-white">Featured Vaults</h2>
           </div>
           
-          <motion.button
-            className="btn-secondary flex items-center gap-2"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Eye className="h-4 w-4" />
-            View All
-          </motion.button>
+          <Link to="/vaults">
+            <motion.button
+              className="btn-secondary flex items-center gap-2"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Eye className="h-4 w-4" />
+              View All
+            </motion.button>
+          </Link>
         </motion.div>
 
         {/* Carousel Container */}

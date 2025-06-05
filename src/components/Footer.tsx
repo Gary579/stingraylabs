@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
 import { Zap, Twitter, Mail, BookOpen, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const footerLinks = {
   platform: [
-    { name: "Vaults", href: "#vaults" },
-    { name: "Dashboard", href: "#dashboard" },
-    { name: "Trade", href: "#trade" },
+    { name: "Selected Vaults", href: "/vaults" },
+    { name: "Moonplay Vaults", href: "#moonshot" },
+    { name: "Analytics", href: "#analytics" },
   ],
   resources: [
     { name: "Documentation", href: "#docs" },
@@ -86,13 +87,23 @@ export default function Footer() {
                 <ul className="space-y-4">
                   {links.map((link, index) => (
                     <li key={index}>
-                      <a
-                        href={link.href}
-                        className="text-white/70 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2 group"
-                      >
-                        {link.name}
-                        <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-50 transition-opacity" />
-                      </a>
+                      {link.href.startsWith('/') ? (
+                        <Link
+                          to={link.href}
+                          className="text-white/70 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2 group"
+                        >
+                          {link.name}
+                          <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-50 transition-opacity" />
+                        </Link>
+                      ) : (
+                        <a
+                          href={link.href}
+                          className="text-white/70 hover:text-white transition-colors duration-300 text-sm flex items-center gap-2 group"
+                        >
+                          {link.name}
+                          <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-50 transition-opacity" />
+                        </a>
+                      )}
                     </li>
                   ))}
                 </ul>
