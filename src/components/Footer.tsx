@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
-import { Zap, Twitter, Mail, BookOpen, ExternalLink } from 'lucide-react';
+import { Twitter, Mail, BookOpen, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import StingrayLogo from '../assets/Stingray-White.png';
 
 const footerLinks = {
   platform: [
-    { name: "Selected Vaults", href: "/vaults" },
-    { name: "Moonplay Vaults", href: "#moonshot" },
-    { name: "Analytics", href: "#analytics" },
+    { name: "Vaults", href: "/vaults" },
+    { name: "Dashboard", href: "/dashboard" },
+    { name: "Trade", href: "/trade" },
   ],
   resources: [
     { name: "Documentation", href: "#docs" },
@@ -43,9 +44,7 @@ export default function Footer() {
             >
               {/* Logo */}
               <div className="flex items-center space-x-3 mb-6">
-                <div className="relative">
-                  <Zap className="h-8 w-8 text-primary-400" />
-                </div>
+                <img src={StingrayLogo} alt="Stingray Protocol Logo" className="h-8 w-auto" />
                 <span className="text-xl font-bold text-white">Stingray Protocol</span>
               </div>
 
