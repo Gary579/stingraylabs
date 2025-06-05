@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Pin, Eye } from 'lucide-react';
 import { useState } from 'react';
-import PoolCard from './PoolCard';
+import VaultCard from './VaultCard';
 
-const poolsData = [
+const vaultsData = [
   {
     title: "Sui Yield Optimizer",
     apr: "12.5%",
@@ -38,10 +38,10 @@ const poolsData = [
   },
 ];
 
-export default function PoolsSection() {
+export default function VaultsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsPerPage = 3;
-  const maxIndex = Math.max(0, poolsData.length - itemsPerPage);
+  const maxIndex = Math.max(0, vaultsData.length - itemsPerPage);
 
   const nextSlide = () => {
     setCurrentIndex(prev => Math.min(prev + 1, maxIndex));
@@ -64,7 +64,7 @@ export default function PoolsSection() {
         >
           <div className="flex items-center gap-4 mb-6 md:mb-0">
             <Pin className="h-8 w-8 text-primary-400" />
-            <h2 className="text-4xl md:text-5xl font-bold text-white">Featured Pools</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-white">Protocol Vaults</h2>
           </div>
           
           <motion.button
@@ -91,16 +91,16 @@ export default function PoolsSection() {
               <ChevronLeft className="h-6 w-6" />
             </motion.button>
 
-            {/* Pools Grid */}
+            {/* Vaults Grid */}
             <div className="flex-1 overflow-hidden">
               <motion.div
                 className="flex gap-6"
                 animate={{ x: -currentIndex * (100 / itemsPerPage) + '%' }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
-                {poolsData.map((pool, index) => (
+                {vaultsData.map((vault, index) => (
                   <div key={index} className="w-full md:w-1/3 flex-shrink-0">
-                    <PoolCard {...pool} index={index} />
+                    <VaultCard {...vault} index={index} />
                   </div>
                 ))}
               </motion.div>
@@ -121,7 +121,7 @@ export default function PoolsSection() {
 
         {/* Indicators */}
         <div className="flex justify-center items-center gap-2 mt-8">
-          {Array.from({ length: Math.ceil(poolsData.length / itemsPerPage) }).map((_, index) => (
+          {Array.from({ length: Math.ceil(vaultsData.length / itemsPerPage) }).map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
@@ -143,10 +143,10 @@ export default function PoolsSection() {
           viewport={{ once: true }}
         >
           <p className="text-white/60 text-sm">
-            📱 Swipe or use arrows to explore more pools
+            📱 Swipe or use arrows to explore more vaults
           </p>
           <p className="text-primary-400/70 text-xs">
-            Currently showing {Math.min(itemsPerPage, poolsData.length - currentIndex)} pools - {poolsData.length} total pools available
+            Currently showing {Math.min(itemsPerPage, vaultsData.length - currentIndex)} vaults - {vaultsData.length} total vaults available
           </p>
         </motion.div>
       </div>

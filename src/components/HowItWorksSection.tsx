@@ -11,7 +11,7 @@ const steps = [
   {
     icon: Target,
     title: "Choose Your Strategy",
-    description: "Browse curated pools or explore Moonplay pools. Filter by risk level, returns, and strategy type.",
+    description: "Browse curated vaults or explore Moonplay vaults. Filter by risk level, returns, and strategy type.",
     emoji: "🎯",
   },
   {

@@ -1,7 +1,7 @@
 import './App.css'
 import Header from './components/Header'
 import HeroSection from './components/HeroSection'
-import PoolsSection from './components/PoolsSection'
+import VaultsSection from './components/VaultsSection'
 import MoonshotSection from './components/MoonshotSection'
 import HowItWorksSection from './components/HowItWorksSection'
 import Footer from './components/Footer'
@@ -12,7 +12,7 @@ function App() {
       <Header />
       <main>
         <HeroSection />
-        <PoolsSection />
+        <VaultsSection />
         <MoonshotSection />
         <HowItWorksSection />
       </main>

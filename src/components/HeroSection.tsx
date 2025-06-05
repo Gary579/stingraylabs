@@ -33,7 +33,7 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          Join curated pools managed by top-tier protocols or create your own MoonShot pool. 
+          Join curated vaults managed by top-tier protocols or create your own MoonShot vault. 
           Experience transparent, automated, and high-yield DeFi strategies.
         </motion.p>
 
@@ -49,7 +49,7 @@ export default function HeroSection() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Explore Pools
+            Explore Vaults
             <TrendingUp className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </motion.button>
 
@@ -58,7 +58,7 @@ export default function HeroSection() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Create a Pool
+            Create a Vault
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </motion.button>
         </motion.div>
@@ -72,7 +72,7 @@ export default function HeroSection() {
         >
           {[
             { label: "Total Value Locked", value: "$24.8M", change: "+15.2%" },
-            { label: "Active Pools", value: "156", change: "+8" },
+            { label: "Active Vaults", value: "156", change: "+8" },
             { label: "Average APR", value: "18.5%", change: "+2.1%" },
           ].map((stat, index) => (
             <motion.div

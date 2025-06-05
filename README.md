@@ -52,9 +52,10 @@ src/
 ├── components/
 │   ├── Header.tsx              # Navigation bar
 │   ├── HeroSection.tsx         # Landing section
-│   ├── PoolsSection.tsx        # DeFi pools display
+│   ├── VaultsSection.tsx       # DeFi vaults display
 │   ├── MoonshotSection.tsx     # Trader showcase
 │   ├── HowItWorksSection.tsx   # Process explanation
+│   ├── VaultCard.tsx           # Single vault card
 │   └── Footer.tsx              # Site footer
 ├── lib/
 │   └── utils.ts                # Utility functions

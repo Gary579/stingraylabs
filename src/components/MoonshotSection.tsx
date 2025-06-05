@@ -64,7 +64,7 @@ export default function MoonshotSection() {
         >
           <div className="flex items-center gap-4 mb-6 md:mb-0">
             <Moon className="h-8 w-8 text-accent-purple" />
-            <h2 className="text-4xl md:text-5xl font-bold text-white">MoonShot Pools</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-white">MoonShot Vaults</h2>
           </div>
           
           <motion.button
@@ -146,7 +146,7 @@ export default function MoonshotSection() {
             🌙 Discover traders and their unique strategies
           </p>
           <p className="text-accent-purple/70 text-xs">
-            Currently showing {Math.min(itemsPerPage, moonshotData.length - currentIndex)} traders - {moonshotData.length} total moonplay pools available
+            Currently showing {Math.min(itemsPerPage, moonshotData.length - currentIndex)} traders - {moonshotData.length} total moonplay vaults available
           </p>
         </motion.div>
       </div>

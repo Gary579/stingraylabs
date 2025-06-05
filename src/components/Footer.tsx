@@ -3,8 +3,8 @@ import { Zap, Twitter, Mail, BookOpen, ExternalLink } from 'lucide-react';
 
 const footerLinks = {
   platform: [
-    { name: "Selected Pools", href: "#pools" },
-    { name: "Moonplay Pools", href: "#moonshot" },
+    { name: "Selected Vaults", href: "#vaults" },
+    { name: "Moonplay Vaults", href: "#moonshot" },
     { name: "Analytics", href: "#analytics" },
   ],
   resources: [

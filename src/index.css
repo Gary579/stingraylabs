@@ -105,7 +105,7 @@
   transform: scale(1.05);
 }
 
-.pool-card {
+.vault-card {
   background: linear-gradient(145deg, rgba(20, 31, 61, 0.8) 0%, rgba(10, 20, 46, 0.6) 100%);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -114,7 +114,7 @@
   transition: all 0.3s ease;
 }
 
-.pool-card:hover {
+.vault-card:hover {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
   transform: translateY(-0.5rem);
   box-shadow: 0 25px 50px -12px rgba(51, 204, 255, 0.1);

@@ -104,10 +104,10 @@
 - **CTA 按鈕組** - Primary 和 Secondary 按鈕
 - **統計卡片** - 玻璃態風格的數據展示
 
-#### PoolsSection
-- **輪播展示** - 橫向滾動的資金池卡片
+#### VaultsSection
+- **輪播展示** - 橫向滾動的資金庫卡片
 - **即時數據** - APR, TVL, Risk Level
-- **篩選功能** - All Pools, Stable, High Yield 分類
+- **篩選功能** - All Vaults, Stable, High Yield 分類
 
 #### MoonshotSection
 - **交易者展示** - 性能表現卡片
@@ -177,8 +177,8 @@ src/
 ├── components/
 │   ├── Header.tsx          # 響應式導航欄
 │   ├── HeroSection.tsx     # 主視覺區塊
-│   ├── PoolsSection.tsx    # 資金池展示
-│   ├── PoolCard.tsx        # 單一資金池卡片
+│   ├── VaultsSection.tsx    # 資金庫展示
+│   ├── VaultCard.tsx        # 單一資金庫卡片
 │   ├── MoonshotSection.tsx # 交易者展示
 │   ├── MoonshotCard.tsx    # 單一交易者卡片
 │   ├── HowItWorksSection.tsx # 使用步驟

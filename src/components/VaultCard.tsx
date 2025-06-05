@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Shield, TrendingUp, Users, DollarSign } from 'lucide-react';
 
-interface PoolCardProps {
+interface VaultCardProps {
   title: string;
   apr: string;
   tvl: string;
@@ -17,10 +17,10 @@ const riskColors = {
   High: 'bg-accent-orange/20 text-accent-orange border-accent-orange/30',
 };
 
-export default function PoolCard({ title, apr, tvl, risk, mgmtFee, carryFee, index }: PoolCardProps) {
+export default function VaultCard({ title, apr, tvl, risk, mgmtFee, carryFee, index }: VaultCardProps) {
   return (
     <motion.div
-      className="pool-card group"
+      className="vault-card group"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
