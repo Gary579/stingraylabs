@@ -65,7 +65,7 @@ export default function DashboardPage() {
             changeType={summaryData.totalValue.changeType}
           />
           <SummaryCard 
-            title="Weighted APR / APY"
+            title="Weighted APR"
             value={summaryData.weightedApy}
           />
           <SummaryCard 

@@ -141,7 +141,7 @@ const VaultPositionsTable: React.FC = () => {
                         onClick={() => setActiveTab('user')}
                         className={`px-3 py-2 font-medium text-sm rounded-md transition-colors ${activeTab === 'user' ? 'bg-primary-400/90 text-white' : 'text-white/70 hover:bg-dark-200'}`}
                     >
-                        User Vaults (Moonplay)
+                        User Vaults
                     </button>
                 </nav>
             </div>
