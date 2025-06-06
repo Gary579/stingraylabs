@@ -1,6 +1,23 @@
 import { useState } from 'react';
-import { ChevronDown, Briefcase, Landmark, TrendingUp, History, Bell, AlertTriangle, ExternalLink } from 'lucide-react';
+import type { ReactElement } from 'react';
+import { ChevronDown, Briefcase, Landmark, TrendingUp, History, Bell, AlertTriangle, ExternalLink, ArrowLeftRight, RefreshCw, Wallet, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+type Token = {
+    symbol: string;
+    name: string;
+    icon: ReactElement;
+};
+
+const availableTokens: Token[] = [
+    { symbol: 'SUI', name: 'Sui', icon: <div className="w-full h-full bg-cyan-500 rounded-full" /> },
+    { symbol: 'USDC', name: 'USD Coin', icon: <div className="w-full h-full bg-blue-600 rounded-full" /> },
+    { symbol: 'ETH', name: 'Ethereum', icon: <div className="w-full h-full bg-gray-500 rounded-full" /> },
+    { symbol: 'WBTC', name: 'Wrapped BTC', icon: <div className="w-full h-full bg-orange-500 rounded-full" /> },
+    { symbol: 'WETH', name: 'Wrapped ETH', icon: <div className="w-full h-full bg-slate-500 rounded-full" /> },
+    { symbol: 'SOL', name: 'Solana', icon: <div className="w-full h-full bg-purple-500 rounded-full" /> },
+    { symbol: 'USDT', name: 'Tether', icon: <div className="w-full h-full bg-green-400 rounded-full" /> },
+];
 
 type SnapshotCardData = {
   title: string;
@@ -25,6 +42,7 @@ const snapshotCards: SnapshotCardData[] = [
 ];
 
 const tabs = [
+  { name: 'Swap', icon: ArrowLeftRight },
   { name: 'Lending', icon: Landmark },
   { name: 'LP & Staking', icon: Briefcase },
   { name: 'Perps & Options', icon: TrendingUp },
@@ -113,6 +131,7 @@ export default function TradePage() {
   const TabContent = () => {
     const renderContent = () => {
         switch (activeTab) {
+            case 'Swap': return <SwapContent />;
             case 'Lending': return <LendingContent />;
             case 'LP & Staking': return <LpStakingContent />;
             case 'Perps & Options': return <PerpsOptionsContent />;
@@ -133,6 +152,176 @@ export default function TradePage() {
     );
   };
   
+  const TokenWalletPanel = ({ onSelectToken }: { onSelectToken: (token: Token) => void }) => {
+    const [isOpen, setIsOpen] = useState(true);
+
+    const walletBalances = [
+        { symbol: 'SUI', amount: '1,234.56' },
+        { symbol: 'USDC', amount: '5,432.10' },
+        { symbol: 'ETH', amount: '2.50' },
+        { symbol: 'WBTC', amount: '0.123' },
+        { symbol: 'WETH', amount: '10.5' },
+        { symbol: 'SOL', amount: '123.45' },
+        { symbol: 'USDT', amount: '10,000.00' },
+    ];
+    
+    if (!isOpen) {
+        return (
+            <div className="text-center">
+                <motion.button 
+                    onClick={() => setIsOpen(true)} 
+                    className="bg-dark-100 p-3 rounded-full hover:bg-dark-200/80 transition-colors"
+                    title="Open Wallet"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                >
+                    <Wallet className="h-6 w-6 text-white/80" />
+                </motion.button>
+            </div>
+        )
+    }
+
+    return (
+        <motion.div 
+            className="bg-dark-200/50 p-4 rounded-xl h-full"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.3 }}
+        >
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="font-bold text-white flex items-center gap-2">
+                    <Wallet className="h-5 w-5 text-primary-400" />
+                    <span>My Tokens</span>
+                </h3>
+                <button 
+                    onClick={() => setIsOpen(false)} 
+                    className="text-white/60 hover:text-white"
+                    title="Collapse Wallet"
+                >
+                    <ChevronRight className="h-5 w-5" />
+                </button>
+            </div>
+            <div className="space-y-2 pr-2 -mr-2 max-h-[340px] overflow-y-auto custom-scrollbar">
+                {walletBalances.map((token) => {
+                    const tokenData = availableTokens.find(t => t.symbol === token.symbol);
+                    if (!tokenData) return null;
+
+                    return (
+                        <div key={token.symbol} className="group flex justify-between items-center p-2 rounded-md hover:bg-dark-100/70 cursor-pointer">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 flex-shrink-0">{tokenData.icon}</div>
+                                <span className="font-medium text-white/90">{token.symbol}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="font-mono text-sm">{token.amount}</span>
+                                <button 
+                                    onClick={() => onSelectToken(tokenData)}
+                                    className="btn-secondary opacity-0 group-hover:opacity-100 transition-opacity text-xs px-2 py-1"
+                                >
+                                    Swap
+                                </button>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        </motion.div>
+    )
+  }
+
+  const SwapContent = () => {
+    const [payAmount, setPayAmount] = useState('');
+    const [receiveAmount, setReceiveAmount] = useState('');
+    const [payToken, setPayToken] = useState<Token>(availableTokens[1]); // Default to USDC
+    const [receiveToken, setReceiveToken] = useState<Token>(availableTokens[0]); // Default to SUI
+
+    const handleTokenSwap = () => {
+        const tempToken = payToken;
+        setPayToken(receiveToken);
+        setReceiveToken(tempToken);
+
+        const tempAmount = payAmount;
+        setPayAmount(receiveAmount);
+        setReceiveAmount(tempAmount);
+    };
+
+    return (
+      <div className="flex justify-center gap-8">
+        <div className="w-full max-w-md">
+            <div className="bg-dark-200/50 p-4 sm:p-6 rounded-xl space-y-4">
+            {/* Pay Section */}
+            <div className="bg-dark-100 p-4 rounded-lg">
+                <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-white/60">Pay</span>
+                <span className="text-sm text-white/60">Balance: 0.00</span>
+                </div>
+                <div className="flex items-center gap-4">
+                <button className="flex items-center gap-2 bg-dark-200 p-2 rounded-md hover:bg-dark-300">
+                    <div className="w-6 h-6">{payToken.icon}</div> 
+                    <span className="font-bold text-lg">{payToken.symbol}</span>
+                    <ChevronDown className="h-4 w-4 text-white/50" />
+                </button>
+                <input 
+                    type="number"
+                    value={payAmount}
+                    onChange={(e) => setPayAmount(e.target.value)}
+                    placeholder="0"
+                    className="bg-transparent text-2xl font-mono text-right w-full focus:outline-none"
+                />
+                </div>
+            </div>
+            
+            {/* Swap Button */}
+            <div className="flex justify-center my-[-8px] z-10 relative">
+                <button 
+                    onClick={handleTokenSwap}
+                    className="bg-dark-200 p-2 rounded-full border-4 border-dark-100 text-white/70 hover:bg-dark-300 hover:rotate-180 transition-transform duration-300"
+                >
+                <RefreshCw className="h-5 w-5" />
+                </button>
+            </div>
+
+            {/* Receive Section */}
+            <div className="bg-dark-100 p-4 rounded-lg">
+                <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-white/60">Receive</span>
+                <span className="text-sm text-white/60">Balance: 0.00</span>
+                </div>
+                <div className="flex items-center gap-4">
+                <button className="flex items-center gap-2 bg-dark-200 p-2 rounded-md hover:bg-dark-300">
+                    <div className="w-6 h-6">{receiveToken.icon}</div> 
+                    <span className="font-bold text-lg">{receiveToken.symbol}</span>
+                    <ChevronDown className="h-4 w-4 text-white/50" />
+                </button>
+                <input 
+                    type="number"
+                    value={receiveAmount}
+                    onChange={(e) => setReceiveAmount(e.target.value)}
+                    placeholder="0"
+                    className="bg-transparent text-2xl font-mono text-right w-full focus:outline-none"
+                />
+                </div>
+            </div>
+            </div>
+
+            <button className="btn-primary w-full mt-6 text-lg py-3">
+            Swap
+            </button>
+
+            <div className="text-center mt-4">
+                <button className="text-sm text-white/60 hover:text-white">
+                    Details
+                </button>
+            </div>
+        </div>
+        <div className="w-72 hidden xl:block">
+            <TokenWalletPanel onSelectToken={setPayToken} />
+        </div>
+      </div>
+    );
+  };
+
   const LendingContent = () => (
     <div className="space-y-8">
         <div>
