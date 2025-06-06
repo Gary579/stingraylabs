@@ -68,7 +68,7 @@ export default function VaultsSection() {
             <h2 className="text-4xl md:text-5xl font-bold text-white">Featured Vaults</h2>
           </div>
           
-          <Link to="/vaults">
+          <Link to="/vaults#protocol-vaults">
             <motion.button
               className="btn-secondary flex items-center gap-2"
               whileHover={{ scale: 1.05 }}

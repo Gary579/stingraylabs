@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Moon, TrendingUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Moon, TrendingUp, Eye } from 'lucide-react';
 import { useState } from 'react';
 import MoonshotCard from './MoonshotCard';
+import { Link } from 'react-router-dom';
 
 const moonshotData = [
   {
@@ -67,14 +68,16 @@ export default function MoonshotSection() {
             <h2 className="text-4xl md:text-5xl font-bold text-white">MoonShot Vaults</h2>
           </div>
           
-          <motion.button
-            className="bg-accent-purple/10 hover:bg-accent-purple/20 border border-accent-purple/30 hover:border-accent-purple/50 text-accent-purple font-semibold px-6 py-3 rounded-lg transition-all duration-300 flex items-center gap-2"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <TrendingUp className="h-4 w-4" />
-            Start Trading
-          </motion.button>
+          <Link to="/vaults#user-vaults">
+            <motion.button
+              className="btn-secondary flex items-center gap-2"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Eye className="h-4 w-4" />
+              View All
+            </motion.button>
+          </Link>
         </motion.div>
 
         {/* Carousel Container */}

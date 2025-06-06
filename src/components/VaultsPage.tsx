@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import VaultsTable, { type VaultData as VaultTableDataType } from "./VaultsTable";
 import VaultsHeroBanner from "./VaultsHeroBanner";
 
@@ -202,14 +204,29 @@ const userVaultsData: VaultPageData[] = [
 // TODO: Implement mock data for User Vaults (15 rows with pagination)
 
 export default function VaultsPage() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.getElementById(location.hash.substring(1));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [location]);
+
   return (
     <div className="min-h-screen">
       {/* Header and Footer are now handled by App.tsx */}
       <main className="pt-20 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <VaultsHeroBanner />
-          <VaultsTable title="Protocol Vaults" data={protocolVaultsData as VaultTableDataType[]} />
-          <VaultsTable title="User Vaults" data={userVaultsData as VaultTableDataType[]} itemsPerPage={10} />
+          <div id="protocol-vaults">
+            <VaultsTable title="Protocol Vaults" data={protocolVaultsData as VaultTableDataType[]} />
+          </div>
+          <div id="user-vaults" className="mt-16">
+            <VaultsTable title="User Vaults" data={userVaultsData as VaultTableDataType[]} itemsPerPage={10} />
+          </div>
         </div>
       </main>
     </div>
