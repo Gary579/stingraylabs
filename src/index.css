@@ -167,3 +167,24 @@
   transform: translateY(-0.5rem);
   box-shadow: 0 25px 50px -12px rgba(153, 102, 255, 0.2);
 }
+
+.connect-button {
+  background: linear-gradient(90deg, #1ABC9C 0%, #2980B9 100%);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+/* Custom Toggle Switch for CreateVaultModal */
+.dot {
+  transform: translateX(0);
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+input:checked + .block + .dot {
+  transform: translateX(24px); /* 6 * 4px(w-6) - 4px(w-1) = 20px -> but looks better with 24px */
+}
+input:checked + .block {
+    background-color: #1ABC9C;
+    transition: background-color 0.2s ease-in-out;
+}

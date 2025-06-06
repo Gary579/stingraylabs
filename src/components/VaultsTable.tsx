@@ -37,8 +37,8 @@ const VaultsTable: React.FC<VaultsTableProps> = ({ title, data, itemsPerPage = I
   };
 
   return (
-    <section className="py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-full mx-auto">
+    <section>
+      <div className="mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
