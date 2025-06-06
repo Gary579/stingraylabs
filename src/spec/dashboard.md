@@ -1,22 +1,14 @@
 以下從 Investor（投資者）視角 出發，列出在 Stingray Dashboard 上最理想、易讀且可操作的資訊模組與指標；介面排版風格，將資料分為「總覽卡片 → 視覺圖表 → 明細表格 → 輔助工具」四大區塊。
 
+First: 這個頁面是 nav. bar / footer 中的那個 dashboard 可以連結過去的頁面
+
 ⸻
 
 1. header, nav.bar 與主頁使用相同元素
 
 以下從 Investor（投資者）視角 出發，列出在 Stingray Dashboard 上最理想、易讀且可操作的資訊模組與指標；同時參考你貼的 Hyperliquid 與 Pendle 介面排版風格，將資料分為「總覽卡片 → 視覺圖表 → 明細表格 → 輔助工具」四大區塊，方便前端元件拆分與 API 規劃。
 
-⸻
-
-1. 入口導覽區（Header ＋ 快速操作列）
-
-元件	說明
-Breadcrumb / Path	例：Dashboard / Portfolio → 讓用戶在 Pools、Portfolio、Rewards 間快速切換。
-跨鏈資產選單	若未來支持多鏈，可從這裡切換 Sui / Aptos / Arbitrum…並自動重新拉取資料。
-快捷按鈕	Deposit、Withdraw、Bridge（跨鏈）、Claim Rewards、Settings。
-
-
-⸻
+⸻ 
 
 2. Portfolio Summary Cards（首屏數據卡）
 
@@ -24,11 +16,11 @@ Breadcrumb / Path	例：Dashboard / Portfolio → 讓用戶在 Pools、Portfolio
 
 卡片	重點指標	備註
 Total Portfolio Value	$X（+Δ% 24h / 7d）	全部 Vault 的市值合計；右上角顯示小箭頭趨勢指示。
-Weighted APR / APY	Y%	依每個 Vault 權重加權。
+Weighted APR / APY	Y%	依每個 Vault 的持倉作為權重加權。
 Unrealized P&L	$ / %	尚未兌現損益；可切換 USD / %。
-Claimable Rewards	$STRAY、合作方代幣、空投…	按 Claim 一鍵領取；金額為 0 時淡化按鈕。
+Claimable Rewards	$SUI、合作方代幣、空投…	按 Claim 一鍵領取；金額為 0 時淡化按鈕。
 
-可選：額外顯示「Cash Available」(錢包可用餘額) 與「Pending Withdrawals」。
+可選：額外顯示「Available」(錢包可用餘額) 與「Rewards」（額外獎勵）。
 
 ⸻
 
