@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import VaultsHeroBanner from '../components/VaultsHeroBanner';
 import VaultsTable, { type VaultData } from '../components/VaultsTable';
-import VaultPositionsTable from '../components/VaultPositionsTable';
 import CreateVaultModal from '../components/CreateVaultModal';
 
 const generateRandomTrend = (length: number, start: number, volatility: number): number[] => {
