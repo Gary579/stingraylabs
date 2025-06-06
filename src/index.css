@@ -206,3 +206,32 @@ input:checked + .block {
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out;
 }
+
+/* Tooltip Styles */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: not-allowed;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 100px;
+  background-color: var(--color-dark-100);
+  color: #fff;
+  text-align: center;
+  border-radius: 10px;
+  padding: 3px 3px 3px;
+  position: absolute;
+  z-index: 1;
+  top: 0px; /* Position the tooltip above the item */
+  left: 90%;
+  margin-left: -60px; /* Use half of the width to center the tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}

@@ -18,12 +18,12 @@ const FormSelect = ({ label, id, children, ...props }: { label: string, id: stri
     </div>
 );
 
-const FormSlider = ({ label, id, value, onChange, min, max, step, unit = '' }: { label: string; id: string; value: number; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; min: number; max: number; step: number; unit?: string; }) => (
+const FormSlider = ({ label, id, value, onChange, min, max, step, unit = '', disabled = false }: { label: string; id: string; value: number; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; min: number; max: number; step: number; unit?: string; disabled?: boolean; }) => (
     <div>
         <label htmlFor={id} className="block text-sm font-medium text-white/80 mb-2">
             {label} <span className="font-bold text-primary-400">{value}{unit}</span>
         </label>
-        <input id={id} type="range" min={min} max={max} step={step} value={value} onChange={onChange} className="w-full h-2 bg-dark-100 rounded-lg appearance-none cursor-pointer range-thumb:bg-primary-400" style={{ accentColor: 'var(--color-primary-400)' }} />
+        <input id={id} type="range" min={min} max={max} step={step} value={value} onChange={onChange} className="w-full h-2 bg-dark-100 rounded-lg appearance-none cursor-pointer range-thumb:bg-primary-400" style={{ accentColor: 'var(--color-primary-400)' }} disabled={disabled} />
     </div>
 );
 
@@ -100,7 +100,7 @@ const CreateVaultModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ 
         <h2 className="text-2xl font-bold">Create New Vault</h2>
         <button onClick={onClose} className="text-white/60 hover:text-white transition-colors"><X className="w-6 h-6" /></button>
       </div>
-      <p className="text-sm text-white/60 mb-8">Step 1 · Set Parameters</p>
+      <p className="text-sm text-white/60 mb-8">Fill in the details below to create your vault</p>
       <div className="space-y-8">
         {/* Basic Information Section */}
         <div>
@@ -152,25 +152,33 @@ const CreateVaultModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ 
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div className="relative tooltip">
+                <div className="opacity-50">
+                    <FormSlider
+                        label="Management Fee"
+                        id="managementFee"
+                        min={0}
+                        max={5}
+                        step={0.1}
+                        value={managementFee}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setManagementFee(parseFloat(e.target.value))}
+                        unit="%"
+                        disabled={true}
+                    />
+                </div>
+                <span className="tooltip-text bg-gray-700 text-white px-2 py-1 rounded text-xs absolute -top-8 left-1/2 -translate-x-1/2">
+                    Coming Soon
+                </span>
+            </div>
             <FormSlider
-              label="Management Fee"
-              id="managementFee"
-              min={0}
-              max={5} // Assuming a max of 5% for now
-              step={0.1}
-              value={managementFee}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setManagementFee(parseFloat(e.target.value))}
-              unit="%"
-            />
-            <FormSlider
-              label="Carry (Performance Fee)"
-              id="carry"
-              min={0}
-              max={30}
-              step={1}
-              value={carry}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCarry(parseFloat(e.target.value))}
-              unit="%"
+                label="Carry (Performance Fee)"
+                id="carry"
+                min={0}
+                max={30}
+                step={1}
+                value={carry}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCarry(parseFloat(e.target.value))}
+                unit="%"
             />
           </div>
         </div>
