@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Twitter, Mail, BookOpen, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import StingrayLogo from '../assets/Stingray-White.png';
+import SuiLogo from '../assets/sui_logo.svg';
 
 const footerLinks = {
   platform: [
@@ -123,14 +124,12 @@ export default function Footer() {
             © 2024 Stingray Protocol. All rights reserved.
           </p>
           
-          <div className="flex items-center gap-2 text-primary-400/80 text-sm font-medium">
+          <div className="flex items-center gap-2 text-white/70 text-sm font-medium">
             <span>Built on</span>
-            <div className="flex items-center gap-1">
-              <div className="w-4 h-4 bg-primary-400 rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 bg-dark-700 rounded-full" />
-              </div>
-              <span>Sui Network</span>
-            </div>
+            <a href="https://sui.io/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-white transition-colors">
+              <img src={SuiLogo} alt="Sui Network Logo" className="h-4 w-auto" />
+              <span className="font-semibold">Sui Network</span>
+            </a>
           </div>
         </motion.div>
       </div>
