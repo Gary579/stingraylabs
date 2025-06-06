@@ -1,5 +1,4 @@
 import VaultsTable, { type VaultData as VaultTableDataType } from "./VaultsTable";
-import type { VaultData } from "./VaultsTable";
 import VaultsHeroBanner from "./VaultsHeroBanner";
 
 interface VaultPageData extends Omit<VaultTableDataType, 'overview'> {

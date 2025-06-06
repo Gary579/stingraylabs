@@ -76,7 +76,7 @@ const PortfolioVisuals: React.FC = () => {
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
                             <XAxis dataKey="name" stroke="#9ca3af" />
-                            <YAxis stroke="#9ca3af" tickFormatter={(value) => `$${Number(value) / 1000}k`} />
+                            <YAxis stroke="#9ca3af" tickFormatter={(value: number) => `$${Number(value) / 1000}k`} />
                             <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(99, 102, 241, 0.5)', strokeWidth: 1, strokeDasharray: '3 3' }}/>
                             <Area type="monotone" dataKey="Stingray USDC Maxi" stackId="1" stroke={COLORS[0]} fill="url(#colorUv)" />
                             <Area type="monotone" dataKey="SUI Yield Master" stackId="1" stroke={COLORS[1]} fill="url(#colorPv)" />
@@ -100,14 +100,14 @@ const PortfolioVisuals: React.FC = () => {
                                 fill="#8884d8"
                                 dataKey="value"
                                 nameKey="name"
-                                label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
+                                label={({ percent }: { percent: number }) => `${(percent * 100).toFixed(0)}%`}
                             >
-                                {allocationData.map((entry, index) => (
+                                {allocationData.map((_, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                             </Pie>
                             <Tooltip contentStyle={{ backgroundColor: 'rgba(30, 30, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '0.5rem' }}/>
-                            <Legend formatter={(value, entry) => <span className="text-white/80">{value}</span>} />
+                            <Legend formatter={(value: string) => <span className="text-white/80">{value}</span>} />
                         </PieChart>
                     </ResponsiveContainer>
                 </div>

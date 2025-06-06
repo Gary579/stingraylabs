@@ -26,12 +26,6 @@ export default function VaultsHeroBanner() {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % bannerImages.length);
   };
 
-  const handlePrev = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + bannerImages.length) % bannerImages.length);
-  };
-
   useEffect(() => {
     if (bannerImages.length <= 1) return; // Don't start timer if only one or no images
     const timer = setTimeout(() => {

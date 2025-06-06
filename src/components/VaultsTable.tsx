@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from 'react';
 import MiniTrendChart from './MiniTrendChart';
 
 export interface VaultData {
