@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import type { ReactElement } from 'react';
-import { ChevronDown, Briefcase, Landmark, TrendingUp, History, Bell, AlertTriangle, ExternalLink, ArrowLeftRight, RefreshCw, Wallet, ChevronRight } from 'lucide-react';
+import { ChevronDown, Briefcase, Landmark, TrendingUp, History, Bell, AlertTriangle, ExternalLink, ArrowLeftRight, RefreshCw, Wallet, ChevronRight, MoreVertical } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell } from 'recharts';
 
 type Token = {
     symbol: string;
@@ -19,12 +20,113 @@ const availableTokens: Token[] = [
     { symbol: 'USDT', name: 'Tether', icon: <div className="w-full h-full bg-green-400 rounded-full" /> },
 ];
 
+const pnlData = Array.from({ length: 20 }, (_, i) => ({ name: `Page ${i}`, uv: Math.random() * 100 + 200 }));
+const valueData = Array.from({ length: 20 }, (_, i) => ({ name: `Page ${i}`, uv: 450000 + Math.random() * 35000 }));
+const aprData = Array.from({ length: 20 }, (_, i) => ({ name: `Page ${i}`, uv: 10 + Math.random() * 5 }));
+
+const allocationData = [
+  { name: 'Spot', value: 400, color: '#3b82f6' },
+  { name: 'Lend', value: 300, color: '#22c55e' },
+  { name: 'LP', value: 300, color: '#f59e0b' },
+  { name: 'Perps', value: 200, color: '#ef4444' },
+];
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+const newSnapshotCards = [
+    { 
+        title: 'Current Value', 
+        value: '$485,320', 
+        subValue: '$450,000',
+        subValueLabel: 'Initial',
+        icon: Briefcase,
+        chart: <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={valueData}>
+                        <defs>
+                            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4}/>
+                                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                            </linearGradient>
+                        </defs>
+                        <Area type="monotone" dataKey="uv" stroke="#3b82f6" strokeWidth={2} fill="url(#colorValue)" />
+                    </AreaChart>
+                </ResponsiveContainer>
+    },
+    { 
+        title: 'Unrealized P&L', 
+        value: '+8.12%', 
+        subValue: '≈ +$35,320',
+        valueColor: 'text-green-400', 
+        chart: <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={pnlData}>
+                        <defs>
+                            <linearGradient id="colorPnl" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#22c55e" stopOpacity={0.4}/>
+                                <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
+                            </linearGradient>
+                        </defs>
+                        <Area type="monotone" dataKey="uv" stroke="#22c55e" strokeWidth={2} fill="url(#colorPnl)" />
+                    </AreaChart>
+                </ResponsiveContainer>,
+        icon: History 
+    },
+    { 
+        title: 'Avg. APR', 
+        value: '12.5%', 
+        subValue: '≈ $285 daily',
+        valueColor: 'text-green-400',
+        icon: TrendingUp,
+        chart: <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={aprData}>
+                        <defs>
+                            <linearGradient id="colorApr" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.4}/>
+                                <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+                            </linearGradient>
+                        </defs>
+                        <Area type="monotone" dataKey="uv" stroke="#f59e0b" strokeWidth={2} fill="url(#colorApr)" />
+                    </AreaChart>
+                </ResponsiveContainer>
+    },
+    { 
+        title: 'Allocation', 
+        icon: Landmark,
+        chart: (() => {
+            const total = allocationData.reduce((sum, item) => sum + item.value, 0);
+            return (
+                <div className="w-full h-full flex flex-col justify-center gap-3">
+                    <div className="w-full h-3.5 flex">
+                        {allocationData.map(item => (
+                            <div key={item.name} className="group relative h-full transition-all duration-300 ease-out hover:scale-y-125 first:rounded-l-full last:rounded-r-full" style={{ width: `${(item.value / total) * 100}%`, backgroundColor: item.color }}>
+                                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block px-2 py-1 bg-gray-900 text-white text-xs rounded-md shadow-lg z-10 whitespace-nowrap">
+                                    {item.name}: {((item.value / total) * 100).toFixed(1)}%
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="flex justify-center flex-wrap gap-x-3 gap-y-1 text-xs">
+                        {allocationData.map((entry) => (
+                            <div key={`legend-${entry.name}`} className="flex items-center gap-1.5">
+                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></div>
+                                <span className="text-white/70">{entry.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )
+        })()
+    },
+];
+
 type SnapshotCardData = {
   title: string;
-  value: string;
+  value?: string;
   buttonText?: string;
   icon: React.ElementType;
   valueColor?: string;
+  subValue?: string;
+  subValueLabel?: string;
+  chart?: ReactElement;
 };
 
 // Dummy data
@@ -34,19 +136,13 @@ const vaults = [
   { name: 'Stablecoin Arbitrage', tvl: '2.5M' },
 ];
 
-const snapshotCards: SnapshotCardData[] = [
-  { title: 'Available to Deploy', value: '$ 72,345', buttonText: 'Deposit', icon: Landmark },
-  { title: 'Total Collateral', value: '$ 312,980', buttonText: 'Manage', icon: Briefcase },
-  { title: 'Borrowing Power', value: '$ 150,000', buttonText: 'Borrow', icon: TrendingUp },
-  { title: 'Unrealized P&L', value: '+ 8.12%', valueColor: 'text-green-400', icon: History },
-];
-
 const tabs = [
   { name: 'Swap', icon: ArrowLeftRight },
   { name: 'Lending', icon: Landmark },
   { name: 'LP & Staking', icon: Briefcase },
   { name: 'Perps & Options', icon: TrendingUp },
   { name: 'History', icon: History },
+  { name: 'Notifications', icon: Bell, unread: true },
 ];
 
 const suppliedAssets = [
@@ -94,18 +190,33 @@ export default function TradePage() {
 
   const SnapshotCard = ({ card }: { card: SnapshotCardData }) => (
     <motion.div 
-      className="bg-dark-100 p-6 rounded-xl border border-white/10 flex flex-col justify-between"
+      className="bg-dark-100 p-4 rounded-xl border border-white/10 flex flex-col relative h-40"
       whileHover={{ y: -5, borderColor: 'rgba(255, 255, 255, 0.2)' }}
       transition={{ type: 'spring', stiffness: 300 }}
     >
-      <div>
-        <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-start">
           <p className="text-white/70 text-sm">{card.title}</p>
           <card.icon className="h-5 w-5 text-white/50" />
-        </div>
-        <p className={`text-3xl font-bold ${card.valueColor || 'text-white'} mb-4`}>{card.value}</p>
       </div>
-      {card.buttonText && <button className="btn-secondary text-sm w-full mt-2">{card.buttonText}</button>}
+
+      <div className="flex-grow flex flex-col justify-center">
+        {card.chart && !card.value && <div className="w-full h-full flex items-center">{card.chart}</div>}
+
+        {card.value && 
+            <div className="flex items-end justify-between gap-4">
+                <div>
+                    <p className={`text-3xl font-bold ${card.valueColor || 'text-white'}`}>{card.value}</p>
+                    {card.subValue && 
+                        <div className="text-xs text-white/60 mt-1">
+                            {card.subValueLabel ? <span>{card.subValueLabel}: </span> : null}
+                            <span>{card.subValue}</span>
+                        </div>
+                    }
+                </div>
+                {card.chart && <div className="w-24 h-12 flex-shrink-0">{card.chart}</div>}
+            </div>
+        }
+      </div>
     </motion.div>
   );
 
@@ -123,6 +234,7 @@ export default function TradePage() {
         >
           <tab.icon className="h-5 w-5" />
           <span>{tab.name}</span>
+          {tab.unread && <div className="w-2 h-2 bg-red-500 rounded-full ml-2 animate-pulse"></div>}
         </button>
       ))}
     </div>
@@ -136,6 +248,7 @@ export default function TradePage() {
             case 'LP & Staking': return <LpStakingContent />;
             case 'Perps & Options': return <PerpsOptionsContent />;
             case 'History': return <HistoryContent />;
+            case 'Notifications': return <NotificationsPanel />;
             default: return <p>Select a tab</p>;
         }
     };
@@ -509,29 +622,24 @@ export default function TradePage() {
   );
 
   const NotificationsPanel = () => (
-    <div className="w-full lg:w-1/4 lg:pl-8 mt-8 lg:mt-0">
-      <div className="bg-dark-100 p-6 rounded-xl border border-white/10 sticky top-28">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-white">Notifications</h3>
-          <Bell className="h-5 w-5 text-white/70" />
-        </div>
+    <div className="max-w-2xl mx-auto">
+        <h3 className="text-xl font-bold text-white mb-6">Notifications</h3>
         <div className="space-y-4">
-          <div className="flex items-start space-x-3 bg-yellow-500/10 p-3 rounded-lg">
-            <AlertTriangle className="h-5 w-5 text-yellow-400 mt-1" />
+          <div className="flex items-start space-x-4 bg-yellow-500/10 p-4 rounded-lg border border-yellow-500/20">
+            <AlertTriangle className="h-5 w-5 text-yellow-400 mt-1 flex-shrink-0" />
             <div>
               <p className="font-semibold text-white">Price Alert</p>
               <p className="text-sm text-white/80">BTC has dropped by 5.2% in the last hour.</p>
             </div>
           </div>
-          <div className="flex items-start space-x-3 bg-red-500/10 p-3 rounded-lg">
-            <AlertTriangle className="h-5 w-5 text-red-400 mt-1" />
+          <div className="flex items-start space-x-4 bg-red-500/10 p-4 rounded-lg border border-red-500/20">
+            <AlertTriangle className="h-5 w-5 text-red-400 mt-1 flex-shrink-0" />
             <div>
               <p className="font-semibold text-white">Liquidation Warning</p>
               <p className="text-sm text-white/80">Your ETH-PERP position is close to liquidation. Add collateral.</p>
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 
@@ -545,21 +653,17 @@ export default function TradePage() {
 
       {/* Vault Snapshot Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        {snapshotCards.map((card, index) => (
+        {newSnapshotCards.map((card, index) => (
           <SnapshotCard key={index} card={card} />
         ))}
       </div>
 
       {/* Main Content Area */}
-      <div className="flex flex-col lg:flex-row">
-        <div className="w-full lg:w-3/4">
+      <div className="w-full">
           {/* Operation Tabs */}
           <OperationTabs />
           {/* Tab Content */}
           <TabContent />
-        </div>
-        {/* Right Panel */}
-        <NotificationsPanel />
       </div>
     </div>
   );
