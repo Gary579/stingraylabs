@@ -1,157 +1,69 @@
-以下為「Stingray Protocol」首頁 Wireframe 的結構與元素設計草稿，協助視覺化頁面佈局與功能定位。可作為 UI/UX 設計的初步參考。
+以下為「Stingray Protocol」首頁基於目前已實作元件的逆向工程規格文件。
 
 ---
 
-## 1. 頁面最上方：Header
+## 1. 頁面結構
 
-* **Logo&品牌名稱**：頁面左上方放置「Stingray Protocol」 Logo，右側可顯示簡短標語，例如「Active Funds on Sui Network」。
-* **主要導航選單**：
+首頁 (`HomePage.tsx`) 是由一系列垂直堆疊的區塊 (Sections) 組成，旨在引導訪客了解協議的核心價值與功能。其結構如下：
 
-  * Home
-  * Selected Pools（精選池）
-  * Moonplay Pools（Moonplay 池）
-  * How It Works（運作原理）
-  * Token（如有\$STRAY治理代幣）
-  * About（關於我們）
-  * Blog/News
-* **用戶操作區**：
-
-  * Connect Wallet（連接錢包）按鈕
-  * If logged in: 顯示用戶名/錢包地址縮寫 + 下拉選單（Profile, Dashboard, Logout）
+*   **頁首 (Header)**: 全站共用的導航列。
+*   **主視覺區 (Hero Section)**
+*   **精選池預覽區 (Vaults Section)**
+*   **Moonplay 池預覽區 (Moonshot Section)**
+*   **運作原理區 (How It Works Section)**
+*   **頁腳 (Footer)**: 全站共用的頁腳。
 
 ---
 
-## 2. Hero Section（主視覺區）
+## 2. 各區塊詳細說明
 
-* **背景圖/視覺元素**：一張動態或靜態的區塊鏈/金融科技相關插圖，或 Sui Network 的象徵性配色與線條。 可以使用微交互特效（如漸層動畫、浮動線條）。
-* **標題**：一句精煉的口號，例如「Empowering Active Funds on Sui Network」
-* **副標題**：簡短說明：「Participate in curated and community-driven fund pools, transparent, automated, and high-yield.」
-* **主要 CTA buttons**：
+### 2.1. 主視覺區 (`HeroSection.tsx`)
 
-  * Explore Selected Pools
-  * Start Moonplay Pool
-* **次要連結**：一個向下箭頭，提示滑動至下一區塊。
+*   **目的**: 吸引訪客注意，並傳達核心價值主張。
+*   **標題**: 「The Future of Active Fund Management on Sui」
+*   **副標題**: 簡潔地說明協議的優勢：「Experience transparent, automated, and high-yield DeFi strategies. Invest with confidence, powered by the speed and security of the Sui network.」
+*   **主要 CTA (Call-to-Action) 按鈕**:
+    *   `Explore Vaults`: 引導用戶前往 `/vaults` 頁面，發現投資機會。
+    *   `Create a Vault`: 引導已連接錢包的用戶前往 `/create` 創建策略，成為 Trader / Leader。
+*   **視覺元素**: 背景使用了動態、抽象的視覺效果 (`vaults_hero_banners`) 來營造科技感。
 
----
+### 2.2. 精選池預覽區 (`VaultsSection.tsx`)
 
-## 3. 功能與價值主張區（Features/Value Proposition）
+*   **對應 Spec 概念**: Protocol Vaults
+*   **目的**: 展示由官方或合作夥伴管理的、較穩健的投資池。
+*   **區塊標題**: 「Protocol Vaults」
+*   **副標題**: 「Robust, battle-tested strategies managed by top-tier protocols in the Sui ecosystem.」
+*   **內容**: 以卡片 (`VaultCard.tsx`) 網格形式展示數個精選池。
+    *   **卡片內容**: 每個卡片顯示 Vault 名稱、Logo、簡短描述、APR、TVL 和運行天數。
+    *   **互動**: 卡片上有 `Details` 按鈕，預期可連結至該 Vault 的詳細頁面。
+*   **查看更多按鈕**: 一個 `View All` 按鈕，引導用戶前往 `/vaults` 頁面的 `Protocol Vaults` Section。
 
-* **三到四個核心特色圖示+文字說明**：
+### 2.3. MoonShot Vaults 預覽區 (`MoonshotSection.tsx`)
 
-  * **Transparency & Security**：智能合約自動執行，公開可審計
-  * **Curated Pools & Community Pools**：精選池 & Moonplay 池供選擇
-  * **Low Fees & High Potential**：2-7% 管理費、0-30% Carry，透明費率
-  * **Lightning-Fast on Sui**：基於 Sui Network 的高速、高效交易
+*   **對應 Spec 概念**: Moonplay Pools / User Vaults
+*   **目的**: 展示由社群交易員發起的、風險和回報可能更高的新興策略池。
+*   **區塊標題**: 「MoonShot Vaults」
+*   **副標題**: 「High-risk, high-reward vaults managed by emerging traders. Your potential moonshot awaits.」
+*   **內容**: 同樣以卡片 (`MoonshotCard.tsx`) 網格形式展示。
+    *   **卡片內容**: 除了基礎資訊外，特別突顯了「All-time PNL」和「Risk Level」等指標。
+*   **查看更多按鈕**: 一個 `View All` 按鈕，引導用戶前往 `/vaults` 頁面的 `User Vaults` Section。
 
----
+### 2.4. 運作原理區 (`HowItWorksSection.tsx`)
 
-## 4. 精選池（Selected Pools）預覽區
-
-* **區塊標題**：「Featured Selected Pools」
-* **輪播卡片/網格顯示**：展示 3-4 個正在運行的精選池示例，每個卡片包含：
-
-  * 池名 + 合作 Protocol Logo
-  * 目前年化收益率（APR）
-  * 簡短策略描述
-  * 基本費率資訊（例如：2% 管理費，20% Carry）
-  * View Details 按鈕
-* **查看更多按鈕**：導向完整精選池列表頁面
-
----
-
-## 5. Moonplay 池（Moonplay Pools）預覽區
-
-* **區塊標題**：「Explore Moonplay Pools」
-* **輪播卡片/網格顯示**：展示 3-4 個活躍的 Moonplay 池示例，每個卡片包含：
-
-  * 池名 + 交易員暱稱 &頭像（或信用評分）
-  * 當前累積收益率 / 最近績效走勢簡圖
-  * 風險評級（A/B/C/D）標籤
-  * 基本費率資訊（0% 管理費，25% Carry）
-  * View Details 按鈕
-* **更多 Moonplay 池按鈕**：導向完整 Moonplay 列表頁面
+*   **目的**: 簡潔地向用戶解釋參與協議的步驟。
+*   **區塊標題**: 「How It Works」
+*   **副標題**: 「Start your DeFi journey with Stingray in three simple steps.」
+*   **內容**: 以三步驟圖文並茂地展示流程：
+    1.  **Connect Wallet**: 連接您的 Sui 錢包。
+    2.  **Explore & Deposit**: 探索不同的 Vaults 並存入資金。
+    3.  **Track & Grow**: 在儀表板上追蹤您的資產增長。
+*   **視覺元素**: 每一步都配有一個相對應的圖示 (`Wallet`, `Search`, `TrendingUp`)。
 
 ---
 
-## 6. How It Works（運作原理）區
+### 總結
 
-* **三步驟簡介**：
-
-  1. **Connect Wallet**：連接您的 Sui 錢包並驗證身份
-  2. **Select or Create Pool**：選擇加入精選池或 Moonplay 池，或申請創建您的交易池
-  3. **Earn & Withdraw**：享受策略收益並在任意時間提領，智能合約自動結算
-* **對應圖示或簡圖**：每步配一個簡潔圖示
-* **Learn More 按鈕**：連結至詳盡的「運作原理」頁面
-
----
-
-## 7. Token & Incentives（若有代幣）
-
-* **區塊標題**：「\$STRAY Governance Token」
-* **內容**：
-
-  * 代幣用途（治理、費用折扣、流動性挖礦）
-  * 發行總量、分配說明
-  * 當前價格 & 市值（若有即時查詢功能，可嵌入小型數據卡）
-  * 購買 & 賺取方式說明（如何透過流動性挖礦獲得）
-* **Learn More 按鈕**：連結至 Token 詳細頁面及白皮書
-
----
-
-## 8. Security & Audit（安全與審計）區
-
-* **區塊標題**：「Security & Audit Reports」
-* **內容**：
-
-  * 顯示已委託的第三方安全審計公司 Logo（如 CertiK、Trail of Bits）
-  * 提供下載或查看最近審計報告的按鈕/連結
-  * 簡短說明：「All smart contracts fully audited and continuously monitored」
-
----
-
-## 9. Frequently Asked Questions（常見問題）
-
-* **折疊式 Accordion** 每個問題可展開查看答案：
-
-  1. What is a Selected Pool?
-  2. How do I start a Moonplay Pool?
-  3. What fees apply?
-  4. How can I view my earnings?
-  5. Is my fund safe?
-* **View All FAQ 按鈕**：導向完整常見問題頁
-
----
-
-## 10. CTA 區與社群連結
-
-* **主要 Call-to-Action**：
-
-  * Join Now（引導註冊/連接錢包）
-  * Create Your Pool（僅限已授權開池者，或引導提交申請）
-* **社群圖示按鈕**：
-
-  * Twitter, Discord, Telegram, GitHub
-  * 鼓勵用戶關注及參與社群討論
-
----
-
-## 11. Footer（頁腳）
-
-* **快速連結**：Home, Selected Pools, Moonplay Pools, How It Works, Token, About, Blog, FAQ, Contact Us
-* **法務聲明**：
-
-  * 隱私政策、使用條款、風險提示
-* **聯絡資訊**：電子郵件地址、官方社群鏈接
-* **版權聲明**："© 2025 Stingray Protocol"
-
----
-
-### 註：
-
-* Wireframe 除了 Desktop 版本，也需考量 Mobile 首頁的占屏佈局，將關鍵區塊以垂直堆疊呈現，並確保 CTA 按鈕在首屏可見。
-* 各區塊圖示、配色與排版可根據品牌識別（Brand Identity）進行統一設計，建議使用 Sui 顏色主題（深藍 / 湖綠 / 白色）搭配，營造高科技與可信任的氛圍。
-
-以上為「Stingray Protocol」首頁 Wireframe 草稿，歡迎進一步討論調整細節。
+目前的首頁 (`HomePage`) 結構完整，清楚地劃分了不同類型的資訊區塊，從品牌宣傳、核心產品展示到使用者入門引導，流程順暢。頁面設計與最初的 Wireframe 概念高度一致，並已成功實作為可互動的元件。
 
 # Stingray Protocol – Homepage Snapshot
 
@@ -171,4 +83,4 @@
 - **Security First**: independent audits by CertiK, Trail of Bits.
 
 ## Quick Actions
-Explore Pools · Start a Pool · Learn More
+Explore Vaults · Create a Vault · Learn More
