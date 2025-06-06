@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import type { ReactElement } from 'react';
-import { ChevronDown, Briefcase, Landmark, TrendingUp, History, Bell, AlertTriangle, ExternalLink, ArrowLeftRight, RefreshCw, Wallet, ChevronRight, MoreVertical } from 'lucide-react';
+import { ChevronDown, Briefcase, Landmark, TrendingUp, History, Bell, AlertTriangle, ExternalLink, ArrowLeftRight, RefreshCw, Wallet, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell } from 'recharts';
+import { ResponsiveContainer, AreaChart, Area } from 'recharts';
 
 type Token = {
     symbol: string;
@@ -30,8 +30,6 @@ const allocationData = [
   { name: 'LP', value: 300, color: '#f59e0b' },
   { name: 'Perps', value: 200, color: '#ef4444' },
 ];
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const newSnapshotCards = [
     { 
