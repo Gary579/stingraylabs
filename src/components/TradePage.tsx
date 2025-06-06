@@ -61,7 +61,7 @@ const tradeHistory = [
 
 
 export default function TradePage() {
-  const [selectedVault, setSelectedVault] = useState(vaults[0]);
+  const [selectedVault, _setSelectedVault] = useState(vaults[0]);
   const [activeTab, setActiveTab] = useState(tabs[0].name);
 
   const VaultSelector = () => (

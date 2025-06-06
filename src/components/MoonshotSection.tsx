@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Moon, TrendingUp, Eye } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Moon, Eye } from 'lucide-react';
 import { useState } from 'react';
 import MoonshotCard from './MoonshotCard';
 import { Link } from 'react-router-dom';
