@@ -77,7 +77,7 @@ export default function DashboardPage() {
             title="Claimable Rewards"
             value={summaryData.claimableRewards}
           >
-            <button className="w-full bg-primary-400/80 hover:bg-primary-400 text-white font-bold py-2 px-4 rounded-lg transition-colors disabled:bg-dark-100 disabled:text-white/50 disabled:cursor-not-allowed"
+            <button className="btn-primary w-full"
               disabled={!hasClaimableRewards}
             >
               Claim All

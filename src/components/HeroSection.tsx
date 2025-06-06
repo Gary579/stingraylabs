@@ -56,14 +56,16 @@ export default function HeroSection() {
             </motion.button>
           </Link>
 
-          <motion.button
-            className="btn-secondary group flex items-center gap-3 text-lg px-8 py-4"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Create a Vault
-            <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-          </motion.button>
+          <Link to="/vaults#user-vaults">
+            <motion.button
+              className="btn-secondary group flex items-center gap-3 text-lg px-8 py-4"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Create a Vault
+              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </motion.button>
+          </Link>
         </motion.div>
 
         {/* Stats */}

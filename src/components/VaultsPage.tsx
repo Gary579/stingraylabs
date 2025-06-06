@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import VaultsHeroBanner from '../components/VaultsHeroBanner';
 import VaultsTable, { type VaultData } from '../components/VaultsTable';
 import CreateVaultModal from '../components/CreateVaultModal';
@@ -63,6 +64,19 @@ const allVaultsData: VaultData[] = [
 
 const VaultsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [highlightCreate, setHighlightCreate] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#user-vaults') {
+      const element = document.getElementById('user-vaults');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        setHighlightCreate(true);
+        setTimeout(() => setHighlightCreate(false), 2000); // Animation duration
+      }
+    }
+  }, [location]);
 
   return (
     <>
@@ -78,12 +92,12 @@ const VaultsPage = () => {
         </div>
 
         {/* User Vaults Section */}
-        <div>
+        <div id="user-vaults" className="scroll-mt-28">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-3xl font-bold">User Vaults</h2>
             <button 
               onClick={() => setIsModalOpen(true)}
-              className="bg-primary-400 hover:bg-primary-500 text-white font-bold py-2 px-6 rounded-lg transition-colors"
+              className={`btn-primary ${highlightCreate ? 'animate-pulse-glow' : ''}`}
             >
               Create Vault
             </button>
