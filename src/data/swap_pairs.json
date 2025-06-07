@@ -1,0 +1,113 @@
+{
+  "protocols": {
+    "scallop": {
+      "name": "Scallop",
+      "supportedTokens": ["SUI", "USDC", "USDT", "ETH", "WBTC"]
+    },
+    "navi": {
+      "name": "Navi Protocol", 
+      "supportedTokens": ["SUI", "USDC", "USDT", "ETH", "WBTC", "SOL"]
+    },
+    "cetus": {
+      "name": "Cetus Protocol",
+      "supportedTokens": ["SUI", "USDC", "USDT", "ETH", "WBTC", "SOL"]
+    },
+    "aftermath": {
+      "name": "Aftermath Finance",
+      "supportedTokens": ["SUI", "USDC", "afSUI", "WETH"]
+    },
+    "streamm": {
+      "name": "Streamm Finance", 
+      "supportedTokens": ["SUI", "USDC", "USDT", "STREAM"]
+    }
+  },
+  "swapPairs": {
+    "SUI": {
+      "availableSwaps": ["USDC", "USDT", "ETH", "WBTC", "SOL", "afSUI"],
+      "protocols": ["scallop", "navi", "cetus", "aftermath"]
+    },
+    "USDC": {
+      "availableSwaps": ["SUI", "USDT", "ETH", "WBTC", "SOL"],
+      "protocols": ["scallop", "navi", "cetus", "aftermath", "streamm"]
+    },
+    "USDT": {
+      "availableSwaps": ["SUI", "USDC", "ETH", "WBTC", "SOL"],
+      "protocols": ["scallop", "navi", "cetus", "streamm"]
+    },
+    "ETH": {
+      "availableSwaps": ["SUI", "USDC", "USDT", "WBTC", "WETH"],
+      "protocols": ["scallop", "navi", "cetus"]
+    },
+    "WBTC": {
+      "availableSwaps": ["SUI", "USDC", "USDT", "ETH"],
+      "protocols": ["scallop", "navi", "cetus"]
+    },
+    "SOL": {
+      "availableSwaps": ["SUI", "USDC", "USDT"],
+      "protocols": ["navi", "cetus"]
+    },
+    "WETH": {
+      "availableSwaps": ["ETH", "SUI", "USDC"],
+      "protocols": ["aftermath"]
+    },
+    "afSUI": {
+      "availableSwaps": ["SUI", "USDC"],
+      "protocols": ["aftermath"]
+    },
+    "STREAM": {
+      "availableSwaps": ["SUI", "USDC", "USDT"],
+      "protocols": ["streamm"]
+    }
+  },
+  "tokenDetails": {
+    "SUI": {
+      "name": "Sui",
+      "decimals": 9,
+      "coingeckoId": "sui",
+      "isNative": true
+    },
+    "USDC": {
+      "name": "USD Coin",
+      "decimals": 6,
+      "coingeckoId": "usd-coin",
+      "isStablecoin": true
+    },
+    "USDT": {
+      "name": "Tether USD",
+      "decimals": 6,
+      "coingeckoId": "tether",
+      "isStablecoin": true
+    },
+    "ETH": {
+      "name": "Ethereum",
+      "decimals": 8,
+      "coingeckoId": "ethereum"
+    },
+    "WBTC": {
+      "name": "Wrapped Bitcoin",
+      "decimals": 8,
+      "coingeckoId": "wrapped-bitcoin"
+    },
+    "SOL": {
+      "name": "Solana",
+      "decimals": 9,
+      "coingeckoId": "solana"
+    },
+    "WETH": {
+      "name": "Wrapped Ethereum",
+      "decimals": 8,
+      "coingeckoId": "weth"
+    },
+    "afSUI": {
+      "name": "Aftermath Staked SUI",
+      "decimals": 9,
+      "coingeckoId": "aftermath-staked-sui",
+      "isLiquidStaking": true
+    },
+    "STREAM": {
+      "name": "Streamm Finance Token",
+      "decimals": 8,
+      "coingeckoId": "streamm-finance"
+    }
+  }
+}

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import type { ReactElement } from 'react';
-import { ChevronDown, Briefcase, Landmark, TrendingUp, History, Bell, AlertTriangle, ExternalLink, ArrowLeftRight, RefreshCw, Wallet, ChevronRight } from 'lucide-react';
+import { ChevronDown, Briefcase, Landmark, TrendingUp, History, Bell, AlertTriangle, ExternalLink, ArrowLeftRight, RefreshCw, Wallet, ChevronRight, Search, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ResponsiveContainer, AreaChart, Area } from 'recharts';
+import swapPairsData from '../data/swap_pairs.json';
 
 type Token = {
     symbol: string;
@@ -271,25 +272,67 @@ export default function TradePage() {
     const [payToken, setPayToken] = useState<Token>(availableTokens[1]); // Default to USDC
     const [receiveToken, setReceiveToken] = useState<Token>(availableTokens[0]); // Default to SUI
     const [isTokenPanelOpen, setIsTokenPanelOpen] = useState(true);
+    const [panelMode, setPanelMode] = useState<'wallet' | 'pairs'>('wallet'); // 'wallet' or 'pairs'
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isMobilePopupOpen, setIsMobilePopupOpen] = useState(false);
 
-    const TokenWalletPanel = ({ onSelectToken }: { onSelectToken: (token: Token) => void }) => {
+    // Get wallet tokens excluding currently selected pay token (for Pay button)
+    const getWalletTokens = () => {
       const walletBalances = [
-          { symbol: 'SUI', amount: '1,234.56' },
-          { symbol: 'USDC', amount: '5,432.10' },
-          { symbol: 'ETH', amount: '2.50' },
-          { symbol: 'WBTC', amount: '0.123' },
-          { symbol: 'WETH', amount: '10.5' },
-          { symbol: 'SOL', amount: '123.45' },
-          { symbol: 'USDT', amount: '10,000.00' },
+        { symbol: 'SUI', amount: '1,234.56' },
+        { symbol: 'USDC', amount: '5,432.10' },
+        { symbol: 'ETH', amount: '2.50' },
+        { symbol: 'WBTC', amount: '0.123' },
+        { symbol: 'WETH', amount: '10.5' },
+        { symbol: 'SOL', amount: '123.45' },
+        { symbol: 'USDT', amount: '10,000.00' },
       ];
       
+      return walletBalances
+        .filter(wallet => wallet.symbol !== payToken.symbol)
+        .map(wallet => {
+          const tokenData = availableTokens.find(t => t.symbol === wallet.symbol);
+          return tokenData ? { ...tokenData, balance: wallet.amount } : null;
+        })
+        .filter(Boolean);
+    };
+
+    // Get available receive tokens based on selected pay token
+    const getAvailableReceiveTokens = () => {
+      const swapPair = swapPairsData.swapPairs[payToken.symbol as keyof typeof swapPairsData.swapPairs];
+      if (!swapPair) return [];
+
+      return swapPair.availableSwaps
+        .map(symbol => {
+          const tokenData = availableTokens.find(t => t.symbol === symbol);
+          const tokenDetails = swapPairsData.tokenDetails[symbol as keyof typeof swapPairsData.tokenDetails];
+          return tokenData && tokenDetails ? { 
+            ...tokenData, 
+            name: tokenDetails.name,
+            protocols: swapPair.protocols 
+          } : null;
+        })
+        .filter(Boolean);
+    };
+
+    // Filter tokens based on search query
+    const filterTokens = (tokens: any[]) => {
+      if (!searchQuery.trim()) return tokens;
+      const query = searchQuery.toLowerCase();
+      return tokens.filter(token => 
+        token.symbol.toLowerCase().includes(query) ||
+        token.name.toLowerCase().includes(query)
+      );
+    };
+
+    const TokenSelectionPanel = () => {
       if (!isTokenPanelOpen) {
           return (
               <div className="text-center pt-2">
                   <motion.button 
                       onClick={() => setIsTokenPanelOpen(true)} 
                       className="bg-dark-100 p-3 rounded-full hover:bg-dark-200/80 transition-colors"
-                      title="Open Wallet"
+                      title="Open Panel"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                   >
@@ -298,7 +341,11 @@ export default function TradePage() {
               </div>
           )
       }
-  
+
+      const currentTokens = panelMode === 'wallet' 
+        ? filterTokens(getWalletTokens()) 
+        : filterTokens(getAvailableReceiveTokens());
+
       return (
           <motion.div 
               className="bg-dark-200/50 p-4 rounded-xl h-full w-96"
@@ -309,40 +356,204 @@ export default function TradePage() {
           >
               <div className="flex justify-between items-center mb-4">
                   <h3 className="font-bold text-white flex items-center gap-2">
-                      <Wallet className="h-5 w-5 text-primary-400" />
-                      <span>Tokens</span>
+                      {panelMode === 'wallet' ? (
+                        <>
+                          <Wallet className="h-5 w-5 text-primary-400" />
+                          <span>Wallet Tokens</span>
+                        </>
+                      ) : (
+                        <>
+                          <ArrowLeftRight className="h-5 w-5 text-primary-400" />
+                          <span>Available Pairs</span>
+                        </>
+                      )}
                   </h3>
                   <button 
                       onClick={() => setIsTokenPanelOpen(false)} 
                       className="text-white/60 hover:text-white"
-                      title="Collapse Wallet"
+                      title="Collapse Panel"
                   >
                       <ChevronRight className="h-5 w-5" />
                   </button>
               </div>
+
+              {/* Search Bar for pairs mode */}
+              {panelMode === 'pairs' && (
+                <div className="relative mb-4">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/50" />
+                  <input
+                    type="text"
+                    placeholder="Search tokens..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-dark-100 border border-white/10 rounded-lg pl-10 pr-10 py-2 text-white placeholder-white/50 focus:outline-none focus:border-primary-400"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/50 hover:text-white"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              )}
+
               <div className="space-y-2 pr-2 -mr-2 max-h-[340px] overflow-y-auto custom-scrollbar">
-                  {walletBalances.map((token) => {
-                      const tokenData = availableTokens.find(t => t.symbol === token.symbol);
-                      if (!tokenData) return null;
-  
-                      return (
-                          <div 
-                              key={token.symbol} 
-                              onClick={() => onSelectToken(tokenData)}
-                              className="flex justify-between items-center p-2 rounded-md hover:bg-dark-100/70 cursor-pointer transition-colors"
-                          >
-                              <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 flex-shrink-0">{tokenData.icon}</div>
-                                  <span className="font-medium text-white/90">{token.symbol}</span>
+                  {currentTokens.map((token: any) => (
+                      <div 
+                          key={token.symbol} 
+                          onClick={() => {
+                            if (panelMode === 'wallet') {
+                              setPayToken(token);
+                            } else {
+                              setReceiveToken(token);
+                            }
+                          }}
+                          className="flex justify-between items-center p-3 rounded-md hover:bg-dark-100/70 cursor-pointer transition-colors"
+                      >
+                          <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 flex-shrink-0">{token.icon}</div>
+                              <div>
+                                <div className="font-medium text-white/90">{token.symbol}</div>
+                                <div className="text-xs text-white/60">{token.name}</div>
                               </div>
-                              <span className="font-mono text-sm text-white/90">{token.amount}</span>
                           </div>
-                      );
-                  })}
+                          <div className="text-right">
+                            {token.balance && (
+                              <div className="font-mono text-sm text-white/90">{token.balance}</div>
+                            )}
+                            {token.protocols && (
+                              <div className="text-xs text-primary-400">
+                                {token.protocols.slice(0, 2).join(', ')}
+                                {token.protocols.length > 2 ? '...' : ''}
+                              </div>
+                            )}
+                          </div>
+                      </div>
+                  ))}
+                  {currentTokens.length === 0 && (
+                    <div className="text-center py-8 text-white/60">
+                      {panelMode === 'pairs' ? 'No matching tokens found' : 'No tokens available'}
+                    </div>
+                  )}
               </div>
           </motion.div>
       )
     }
+
+    // Mobile popup component
+    const MobileTokenPopup = () => {
+      if (!isMobilePopupOpen) return null;
+
+      const currentTokens = panelMode === 'wallet' 
+        ? filterTokens(getWalletTokens()) 
+        : filterTokens(getAvailableReceiveTokens());
+
+      return (
+        <motion.div 
+          className="fixed inset-0 bg-black/50 z-50 flex items-end xl:hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setIsMobilePopupOpen(false)}
+        >
+          <motion.div 
+            className="bg-dark-100 w-full max-h-[80vh] rounded-t-xl p-4"
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-white flex items-center gap-2">
+                {panelMode === 'wallet' ? (
+                  <>
+                    <Wallet className="h-5 w-5 text-primary-400" />
+                    <span>Select Token to Pay</span>
+                  </>
+                ) : (
+                  <>
+                    <ArrowLeftRight className="h-5 w-5 text-primary-400" />
+                    <span>Select Token to Receive</span>
+                  </>
+                )}
+              </h3>
+              <button 
+                onClick={() => setIsMobilePopupOpen(false)} 
+                className="text-white/60 hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Search Bar for pairs mode */}
+            {panelMode === 'pairs' && (
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/50" />
+                <input
+                  type="text"
+                  placeholder="Search tokens..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-dark-200 border border-white/10 rounded-lg pl-10 pr-10 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary-400"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/50 hover:text-white"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            )}
+
+            <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+              {currentTokens.map((token: any) => (
+                <button
+                  key={token.symbol}
+                  onClick={() => {
+                    if (panelMode === 'wallet') {
+                      setPayToken(token);
+                    } else {
+                      setReceiveToken(token);
+                    }
+                    setIsMobilePopupOpen(false);
+                  }}
+                  className="w-full flex justify-between items-center p-4 rounded-lg hover:bg-dark-200 transition-colors text-left"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 flex-shrink-0">{token.icon}</div>
+                    <div>
+                      <div className="font-medium text-white text-lg">{token.symbol}</div>
+                      <div className="text-sm text-white/60">{token.name}</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    {token.balance && (
+                      <div className="font-mono text-white/90">{token.balance}</div>
+                    )}
+                    {token.protocols && (
+                      <div className="text-xs text-primary-400 mt-1">
+                        {token.protocols.slice(0, 2).join(', ')}
+                        {token.protocols.length > 2 ? '...' : ''}
+                      </div>
+                    )}
+                  </div>
+                </button>
+              ))}
+              {currentTokens.length === 0 && (
+                <div className="text-center py-12 text-white/60">
+                  {panelMode === 'pairs' ? 'No matching tokens found' : 'No tokens available'}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      );
+    };
 
     const handleTokenSwap = () => {
         const tempToken = payToken;
@@ -365,7 +576,15 @@ export default function TradePage() {
                 <span className="text-sm text-white/60">Balance: 0.00</span>
                 </div>
                 <div className="flex items-center gap-4">
-                <button className="flex items-center gap-2 bg-dark-200 p-2 rounded-md hover:bg-dark-300">
+                <button 
+                    onClick={() => {
+                      setPanelMode('wallet');
+                      setSearchQuery('');
+                      setIsTokenPanelOpen(true);
+                      setIsMobilePopupOpen(true);
+                    }}
+                    className="flex items-center gap-2 bg-dark-200 p-2 rounded-md hover:bg-dark-300"
+                >
                     <div className="w-6 h-6">{payToken.icon}</div> 
                     <span className="font-bold text-lg">{payToken.symbol}</span>
                     <ChevronDown className="h-4 w-4 text-white/50" />
@@ -397,7 +616,15 @@ export default function TradePage() {
                 <span className="text-sm text-white/60">Balance: 0.00</span>
                 </div>
                 <div className="flex items-center gap-4">
-                <button className="flex items-center gap-2 bg-dark-200 p-2 rounded-md hover:bg-dark-300">
+                <button 
+                    onClick={() => {
+                      setPanelMode('pairs');
+                      setSearchQuery('');
+                      setIsTokenPanelOpen(true);
+                      setIsMobilePopupOpen(true);
+                    }}
+                    className="flex items-center gap-2 bg-dark-200 p-2 rounded-md hover:bg-dark-300"
+                >
                     <div className="w-6 h-6">{receiveToken.icon}</div> 
                     <span className="font-bold text-lg">{receiveToken.symbol}</span>
                     <ChevronDown className="h-4 w-4 text-white/50" />
@@ -424,8 +651,9 @@ export default function TradePage() {
             </div>
         </div>
         <div className="hidden xl:block">
-            <TokenWalletPanel onSelectToken={setPayToken} />
+            <TokenSelectionPanel />
         </div>
+        <MobileTokenPopup />
       </div>
     );
   };
