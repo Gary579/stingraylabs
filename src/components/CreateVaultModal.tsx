@@ -100,7 +100,7 @@ const CreateVaultModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ 
         <h2 className="text-2xl font-bold">Create New Vault</h2>
         <button onClick={onClose} className="text-white/60 hover:text-white transition-colors"><X className="w-6 h-6" /></button>
       </div>
-      <p className="text-sm text-white/60 mb-8">Fill in the details below to create your vault</p>
+      <p className="text-sm text-white/60 mb-8">Step 1 · Fill in the details about your vault</p>
       <div className="space-y-8">
         {/* Basic Information Section */}
         <div>
