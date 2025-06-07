@@ -155,9 +155,121 @@ const borrowedAssets = [
   { asset: 'ETH', debt: '5.00', apy: '3.9%', health: 2.5, protocol: 'Scallop' },
 ];
 
-const lpPositions = [
-    { pool: 'SUI/USDC', protocol: 'Streamm', amount: '$25,000', apr: '15.2%', rewards: '125 STREAM' },
-    { pool: 'ETH/SUI', protocol: 'Aftermath', amount: '$18,500', apr: '12.8%', rewards: '88 AFM' },
+// LP Protocol Data
+const lpProtocols = [
+  {
+    id: 'momentum',
+    name: 'Momentum',
+    type: 'LP' as const,
+    positions: [
+      {
+        pool: 'SUI/USDC',
+        tvl: '$2.1M',
+        userAmount: '$25,000',
+        feeApr: '8.5%',
+        miningApr: '6.7%',
+        totalApr: '15.2%',
+        unclaimedRewards: '125 MOM',
+        ratio: '50/50'
+      },
+      {
+        pool: 'ETH/USDC',
+        tvl: '$1.8M',
+        userAmount: '$12,000',
+        feeApr: '7.2%',
+        miningApr: '5.8%',
+        totalApr: '13.0%',
+        unclaimedRewards: '68 MOM',
+        ratio: '50/50'
+      }
+    ]
+  },
+  {
+    id: 'steamm',
+    name: 'Steamm',
+    type: 'LP' as const,
+    positions: [
+      {
+        pool: 'ETH/SUI',
+        tvl: '$1.5M',
+        userAmount: '$18,500',
+        feeApr: '6.8%',
+        miningApr: '6.0%',
+        totalApr: '12.8%',
+        unclaimedRewards: '88 STREAM',
+        ratio: '60/40'
+      }
+    ]
+  }
+];
+
+// LST Staking Protocol Data
+const lstStakingProtocols = [
+  {
+    id: 'haedal',
+    name: 'Haedal',
+    type: 'Staking' as const,
+    assets: [
+      {
+        asset: 'SUI',
+        lstToken: 'haSUI',
+        exchangeRate: '1.024',
+        userStaked: '1,200',
+        redeemableValue: '$1,228.80',
+        apr: '3.8%',
+        unlockMethod: 'Instant via SIP-33',
+        unlockTime: 'Instant',
+        additionalRewards: 'DeFi yield boost'
+      },
+      {
+        asset: 'WAL',
+        lstToken: 'haWAL',
+        exchangeRate: '1.018',
+        userStaked: '500',
+        redeemableValue: '$509.00',
+        apr: '4.2%',
+        unlockMethod: '24h batch',
+        unlockTime: '~24h',
+        additionalRewards: 'None'
+      }
+    ]
+  },
+  {
+    id: 'volo',
+    name: 'Volo',
+    type: 'Staking' as const,
+    assets: [
+      {
+        asset: 'SUI',
+        lstToken: 'vSUI',
+        exchangeRate: '1.019',
+        userStaked: '800',
+        redeemableValue: '$815.20',
+        apr: '3.2%',
+        unlockMethod: 'Instant Unstake (V2)',
+        unlockTime: 'Instant',
+        additionalRewards: 'None'
+      }
+    ]
+  },
+  {
+    id: 'springsuii',
+    name: 'SpringSui',
+    type: 'Staking' as const,
+    assets: [
+      {
+        asset: 'SUI',
+        lstToken: 'sSUI',
+        exchangeRate: '1.021',
+        userStaked: '2,000',
+        redeemableValue: '$2,042.00',
+        apr: '3.5%',
+        unlockMethod: '1:1 instant via SIP-33',
+        unlockTime: 'Instant',
+        additionalRewards: 'Auto-compounding'
+      }
+    ]
+  }
 ];
 
 const openPositions = [
@@ -723,43 +835,427 @@ export default function TradePage() {
     </div>
   );
 
-  const LpStakingContent = () => (
-    <div className="space-y-8">
-        <div>
-            <h3 className="text-xl font-bold text-white mb-4">LP Positions</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {lpPositions.map(pos => (
-                    <div key={pos.pool} className="glass-card p-5 rounded-xl flex flex-col justify-between">
-                        <div>
-                            <div className="flex justify-between items-center mb-2">
-                                <h4 className="font-bold text-lg text-white">{pos.pool}</h4>
-                                <span className="text-xs font-medium bg-dark-100 text-white/80 px-2 py-1 rounded-md">{pos.protocol}</span>
-                            </div>
-                            <div className="space-y-2 mt-4">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm text-white/70">Invested:</span>
-                                    <span className="font-medium text-white">{pos.amount}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm text-white/70">APR:</span>
-                                    <span className="font-medium text-green-400">{pos.apr}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-4 pt-4 border-t border-white/10">
-                            <div className="flex justify-between items-center mb-2">
-                                <span className="text-sm text-white/70">Unclaimed:</span>
-                                <span className="font-medium text-primary-400">{pos.rewards}</span>
-                            </div>
-                            <button className="btn-primary text-sm w-full mt-2">Claim Rewards</button>
-                        </div>
-                    </div>
-                ))}
-            </div>
+  const LpStakingContent = () => {
+    const [activeFilter, setActiveFilter] = useState<'all' | 'lp' | 'staking'>('all');
+    const [isAddPositionModalOpen, setIsAddPositionModalOpen] = useState(false);
+
+    // Filter tabs
+    const filterTabs = [
+      { id: 'all', label: 'All', count: lpProtocols.reduce((acc, p) => acc + p.positions.length, 0) + lstStakingProtocols.reduce((acc, p) => acc + p.assets.length, 0) },
+      { id: 'lp', label: 'LP', count: lpProtocols.reduce((acc, p) => acc + p.positions.length, 0) },
+      { id: 'staking', label: 'Staking', count: lstStakingProtocols.reduce((acc, p) => acc + p.assets.length, 0) }
+    ];
+
+    // Get filtered positions
+    const getFilteredPositions = () => {
+      const allPositions: Array<any> = [];
+      
+      if (activeFilter === 'all' || activeFilter === 'lp') {
+        lpProtocols.forEach(protocol => {
+          protocol.positions.forEach(position => {
+            allPositions.push({
+              ...position,
+              protocol: protocol.name,
+              type: 'LP',
+              id: `${protocol.id}-${position.pool}`
+            });
+          });
+        });
+      }
+      
+      if (activeFilter === 'all' || activeFilter === 'staking') {
+        lstStakingProtocols.forEach(protocol => {
+          protocol.assets.forEach(asset => {
+            allPositions.push({
+              ...asset,
+              protocol: protocol.name,
+              type: 'Staking',
+              id: `${protocol.id}-${asset.asset}`
+            });
+          });
+        });
+      }
+      
+      return allPositions;
+    };
+
+    // LP Card Component
+    const LPCard = ({ position }: { position: any }) => (
+      <div className="glass-card p-5 rounded-xl flex flex-col justify-between relative">
+        <div className="absolute top-3 right-3">
+          <span className="text-xs font-medium bg-blue-500/20 text-blue-300 px-2 py-1 rounded-md">LP</span>
         </div>
-        <button className="btn-secondary w-full md:w-auto">Claim All Rewards & Unstake</button>
-    </div>
-  );
+        <div>
+          <div className="flex justify-between items-start mb-2 pr-8">
+            <h4 className="font-bold text-lg text-white">{position.pool}</h4>
+          </div>
+          <div className="text-xs text-white/60 mb-4">{position.protocol}</div>
+          
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-white/70">TVL:</span>
+              <span className="font-medium text-white/90">{position.tvl}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-white/70">Your Investment:</span>
+              <span className="font-medium text-white">{position.userAmount}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-white/70">Ratio:</span>
+              <span className="font-medium text-white/90">{position.ratio}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-white/70">Fee APR:</span>
+              <span className="font-medium text-green-400">{position.feeApr}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-white/70">Mining APR:</span>
+              <span className="font-medium text-green-400">{position.miningApr}</span>
+            </div>
+            <div className="flex justify-between items-center border-t border-white/10 pt-2">
+              <span className="text-sm text-white/70 font-medium">Total APR:</span>
+              <span className="font-bold text-green-400">{position.totalApr}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-4 pt-4 border-t border-white/10">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-sm text-white/70">Unclaimed Rewards:</span>
+            <span className="font-medium text-primary-400">{position.unclaimedRewards}</span>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <button className="btn-secondary text-sm flex-1">Remove LP</button>
+            <button className="btn-primary text-sm flex-1">Claim Rewards</button>
+          </div>
+        </div>
+      </div>
+    );
+
+    // LST Staking Card Component
+    const StakingCard = ({ position }: { position: any }) => (
+      <div className="glass-card p-5 rounded-xl flex flex-col justify-between relative">
+        <div className="absolute top-3 right-3">
+          <span className="text-xs font-medium bg-purple-500/20 text-purple-300 px-2 py-1 rounded-md">Staking</span>
+        </div>
+        <div>
+          <div className="flex justify-between items-start mb-2 pr-8">
+            <h4 className="font-bold text-lg text-white">Stake {position.asset}</h4>
+          </div>
+          <div className="text-xs text-white/60 mb-4">{position.protocol}</div>
+          
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-white/70">LST Token:</span>
+              <span className="font-medium text-white/90">{position.lstToken}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-white/70">Exchange Rate:</span>
+              <span className="font-medium text-white/90">1 {position.lstToken} ≈ {position.exchangeRate} {position.asset}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-white/70">Staked Amount:</span>
+              <span className="font-medium text-white">{position.userStaked} {position.asset}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-white/70">Redeemable Value:</span>
+              <span className="font-medium text-white">{position.redeemableValue}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-white/70">APR:</span>
+              <span className="font-medium text-green-400">{position.apr}</span>
+            </div>
+            {position.additionalRewards && position.additionalRewards !== 'None' && (
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-white/70">Bonus:</span>
+                <span className="font-medium text-primary-400 text-xs">{position.additionalRewards}</span>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <div className="mt-4 pt-4 border-t border-white/10">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-sm text-white/70">Unlock Method:</span>
+            <span className="font-medium text-white/90 text-xs">{position.unlockTime}</span>
+          </div>
+          <div className="text-xs text-white/60 mb-3">{position.unlockMethod}</div>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <button className="btn-secondary text-sm flex-1">Unstake</button>
+            <button className="btn-primary text-sm flex-1">Add More</button>
+          </div>
+        </div>
+      </div>
+    );
+
+    return (
+      <div className="space-y-6">
+        {/* Filter Tabs */}
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="flex bg-dark-200/50 rounded-lg p-1 w-full sm:w-auto overflow-x-auto">
+            {filterTabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveFilter(tab.id as 'all' | 'lp' | 'staking')}
+                className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-md transition-colors text-sm font-medium whitespace-nowrap ${
+                  activeFilter === tab.id
+                    ? 'bg-primary-400 text-white'
+                    : 'text-white/70 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span className="bg-white/20 text-xs px-1.5 py-0.5 rounded-full">{tab.count}</span>
+              </button>
+            ))}
+          </div>
+          <button 
+            onClick={() => setIsAddPositionModalOpen(true)}
+            className="btn-primary text-sm w-full sm:w-auto"
+          >
+            + Add Position
+          </button>
+        </div>
+
+        {/* Position Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+          {getFilteredPositions().map(position => (
+            <div key={position.id}>
+              {position.type === 'LP' ? (
+                <LPCard position={position} />
+              ) : (
+                <StakingCard position={position} />
+              )}
+            </div>
+          ))}
+        </div>
+
+        {getFilteredPositions().length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-white/60 mb-4">No positions found</div>
+            <button 
+              onClick={() => setIsAddPositionModalOpen(true)}
+              className="btn-primary"
+            >
+              Add Your First Position
+            </button>
+          </div>
+        )}
+
+        {/* Global Actions */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+          <button className="btn-secondary w-full sm:w-auto">Claim All LP Rewards</button>
+          <button className="btn-secondary w-full sm:w-auto">Unstake All Positions</button>
+        </div>
+
+        {/* Add Position Modal */}
+        {isAddPositionModalOpen && (
+          <AddPositionModal onClose={() => setIsAddPositionModalOpen(false)} />
+        )}
+      </div>
+    );
+  };
+
+  // Add Position Modal Component
+  const AddPositionModal = ({ onClose }: { onClose: () => void }) => {
+    const [mode, setMode] = useState<'LP' | 'Staking'>('LP');
+    const [selectedProtocol, setSelectedProtocol] = useState('');
+    const [asset1Amount, setAsset1Amount] = useState('');
+    const [asset2Amount, setAsset2Amount] = useState('');
+    const [stakingAmount, setStakingAmount] = useState('');
+
+    return (
+      <motion.div
+        className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      >
+        <motion.div
+          className="bg-dark-100 rounded-xl p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto mx-4"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-bold text-white">Add New Position</h3>
+            <button onClick={onClose} className="text-white/60 hover:text-white">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Mode Selection */}
+          <div className="mb-6">
+            <label className="text-sm text-white/70 mb-3 block">Position Type</label>
+            <div className="flex bg-dark-200/50 rounded-lg p-1">
+              <button
+                onClick={() => setMode('LP')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  mode === 'LP'
+                    ? 'bg-primary-400 text-white'
+                    : 'text-white/70 hover:text-white'
+                }`}
+              >
+                LP Position
+              </button>
+              <button
+                onClick={() => setMode('Staking')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  mode === 'Staking'
+                    ? 'bg-primary-400 text-white'
+                    : 'text-white/70 hover:text-white'
+                }`}
+              >
+                Single Asset Staking
+              </button>
+            </div>
+          </div>
+
+          {/* Protocol Selection */}
+          <div className="mb-6">
+            <label className="text-sm text-white/70 mb-2 block">Protocol</label>
+            <select
+              value={selectedProtocol}
+              onChange={(e) => setSelectedProtocol(e.target.value)}
+              className="w-full bg-dark-200 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary-400"
+            >
+              <option value="">Select Protocol</option>
+              {mode === 'LP' ? (
+                <>
+                  <option value="momentum">Momentum</option>
+                  <option value="steamm">Steamm (Coming Soon)</option>
+                </>
+              ) : (
+                <>
+                  <option value="haedal">Haedal (SUI, WAL)</option>
+                  <option value="volo">Volo (SUI)</option>
+                  <option value="springsuii">SpringSui (SUI)</option>
+                </>
+              )}
+            </select>
+          </div>
+
+          {/* Dynamic Form Based on Mode */}
+          {mode === 'LP' ? (
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm text-white/70 mb-2 block">Asset 1 Amount</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    value={asset1Amount}
+                    onChange={(e) => setAsset1Amount(e.target.value)}
+                    placeholder="0.00"
+                    className="flex-1 bg-dark-200 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary-400"
+                  />
+                  <select className="bg-dark-200 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary-400">
+                    <option>SUI</option>
+                    <option>USDC</option>
+                    <option>ETH</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm text-white/70 mb-2 block">Asset 2 Amount</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    value={asset2Amount}
+                    onChange={(e) => setAsset2Amount(e.target.value)}
+                    placeholder="0.00"
+                    className="flex-1 bg-dark-200 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary-400"
+                  />
+                  <select className="bg-dark-200 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary-400">
+                    <option>USDC</option>
+                    <option>SUI</option>
+                    <option>ETH</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="bg-dark-200/50 p-3 rounded-lg">
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-white/70">Estimated LP Shares:</span>
+                  <span className="text-white">~1,234.56 LP</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-white/70">Pool Ratio:</span>
+                  <span className="text-white">50/50</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm text-white/70 mb-2 block">Staking Amount</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    value={stakingAmount}
+                    onChange={(e) => setStakingAmount(e.target.value)}
+                    placeholder="0.00"
+                    className="flex-1 bg-dark-200 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary-400"
+                  />
+                  <select className="bg-dark-200 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary-400">
+                    <option>SUI</option>
+                    <option>WAL</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="bg-dark-200/50 p-3 rounded-lg">
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-white/70">You will receive:</span>
+                  <span className="text-white">~1,020.5 haSUI</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-white/70">Exchange Rate:</span>
+                  <span className="text-white">1 haSUI ≈ 1.024 SUI</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* APR & Risk Information */}
+          <div className="mt-6 p-4 bg-dark-200/30 rounded-lg">
+            <h4 className="text-sm font-medium text-white mb-3">Expected Returns & Risks</h4>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-white/70">Estimated APR:</span>
+                <span className="text-green-400 font-medium">
+                  {mode === 'LP' ? '12.5%' : '3.8%'}
+                </span>
+              </div>
+              {mode === 'LP' && (
+                <div className="text-xs text-yellow-400 flex items-start gap-2">
+                  <AlertTriangle className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                  <span>LP positions are subject to impermanent loss risk</span>
+                </div>
+              )}
+              {mode === 'Staking' && (
+                <div className="text-xs text-blue-400 flex items-start gap-2">
+                  <ExternalLink className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                  <span>Instant unstaking available via SIP-33 liquidity pools</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 mt-6">
+            <button onClick={onClose} className="btn-secondary flex-1">
+              Cancel
+            </button>
+            <button className="btn-primary flex-1">
+              Confirm & Sign
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  };
 
   const PerpsOptionsContent = () => (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
