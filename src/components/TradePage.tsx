@@ -219,22 +219,24 @@ export default function TradePage() {
   );
 
   const OperationTabs = () => (
-    <div className="flex space-x-1 border-b border-white/10 mb-8">
-      {tabs.map(tab => (
-        <button 
-          key={tab.name}
-          onClick={() => setActiveTab(tab.name)}
-          className={`flex items-center space-x-2 px-4 py-3 font-medium transition-colors rounded-t-md ${
-            activeTab === tab.name 
-              ? 'text-white bg-dark-100 border-b-2 border-primary-400' 
-              : 'text-white/60 hover:text-white hover:bg-white/5'
-          }`}
-        >
-          <tab.icon className="h-5 w-5" />
-          <span>{tab.name}</span>
-          {tab.unread && <div className="w-2 h-2 bg-red-500 rounded-full ml-2 animate-pulse"></div>}
-        </button>
-      ))}
+    <div className="border-b border-white/10 mb-8">
+      <div className="flex space-x-1 overflow-x-auto scrollbar-hide pb-1">
+        {tabs.map(tab => (
+          <button 
+            key={tab.name}
+            onClick={() => setActiveTab(tab.name)}
+            className={`flex items-center space-x-2 px-3 sm:px-4 py-3 font-medium transition-colors rounded-t-md whitespace-nowrap flex-shrink-0 ${
+              activeTab === tab.name 
+                ? 'text-white bg-dark-100 border-b-2 border-primary-400' 
+                : 'text-white/60 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <tab.icon className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span className="text-sm sm:text-base">{tab.name}</span>
+            {tab.unread && <div className="w-2 h-2 bg-red-500 rounded-full ml-1 sm:ml-2 animate-pulse"></div>}
+          </button>
+        ))}
+      </div>
     </div>
   );
 
